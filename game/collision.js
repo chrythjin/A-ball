@@ -2,6 +2,7 @@ import { gameState, 적_체력_리스트 } from './state.js';
 import { enemies } from './enemy.js';
 import { recordKill } from './difficulty.js';
 import { flashEnemy, playKillSound } from './polish.js';
+import { soundManager } from './sound-manager.js';
 
 let balls = [];
 
@@ -123,12 +124,18 @@ export function checkCollisions() {
       damagedEnemies.add(enemy.id);
       enemy.hp -= gameState.공_데미지;
       ball.vy *= -1;
+      soundManager.playSFX('ball-hit');
       flashEnemy(null, enemy);
 
       if (enemy.hp <= 0) {
         clearEnemyCooldown(enemy.id);
         enemies.splice(enemyIndex, 1);
         recordKill();
+        gameState.골드_개수 += 1;
+        localStorage.setItem('game_gold', String(gameState.골드_개수));
+        if (typeof window.updateGoldDisplay === 'function') {
+          window.updateGoldDisplay();
+        }
         playKillSound();
       }
     }

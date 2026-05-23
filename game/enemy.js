@@ -14,8 +14,8 @@ const ENEMY_WIDTH = 60;
 const ENEMY_HEIGHT = 30;
 const SPAWN_Y = 120;
 const ROW_STEP = 60;
-// 적 바닥 모서리(y + ENEMY_HEIGHT) >= 580 이면 게임오버. 시각적 데드라인 라인은 y=600.
-const DEADLINE_Y = 580;
+// 적 바닥 모서리(y + ENEMY_HEIGHT) >= 740 이면 게임오버. 시각적 데드라인 라인은 y=760.
+const DEADLINE_Y = 740;
 const X_MIN = 40;
 const X_MAX = 440;
 const HP_TEXT_COLOR = '#ffffff';
@@ -60,6 +60,20 @@ export function checkGameOver() {
  * with HP text centered inside.
  * @param {CanvasRenderingContext2D} ctx
  */
+function drawRoundedRect(ctx, x, y, width, height, radius) {
+  ctx.beginPath();
+  ctx.moveTo(x + radius, y);
+  ctx.lineTo(x + width - radius, y);
+  ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+  ctx.lineTo(x + width, y + height - radius);
+  ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+  ctx.lineTo(x + radius, y + height);
+  ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+  ctx.lineTo(x, y + radius);
+  ctx.quadraticCurveTo(x, y, x + radius, y);
+  ctx.closePath();
+}
+
 export function drawEnemies(ctx) {
   if (!ctx || enemies.length === 0) return;
 
@@ -69,13 +83,90 @@ export function drawEnemies(ctx) {
   ctx.textBaseline = 'middle';
 
   for (const enemy of enemies) {
-    const ratio = enemy.maxHp > 0 ? enemy.hp / enemy.maxHp : 0;
-    const clamped = Math.max(0, Math.min(1, ratio));
-    const r = Math.round(255 * (1 - clamped));
-    const g = Math.round(255 * clamped);
+    let neonColor = '#ff0055';
+    let topColor = '#ff003c';
+    let bottomColor = '#4a0011';
 
-    ctx.fillStyle = `rgb(${r}, ${g}, 0)`;
-    ctx.fillRect(enemy.x, enemy.y, ENEMY_WIDTH, ENEMY_HEIGHT);
+    if (enemy.hp === 1) {
+      neonColor = '#00ffcc';
+      topColor = '#00ffd2';
+      bottomColor = '#004035';
+    } else if (enemy.hp === 2) {
+      neonColor = '#ffff00';
+      topColor = '#ffea00';
+      bottomColor = '#403b00';
+    } else if (enemy.hp === 3) {
+      neonColor = '#ff6600';
+      topColor = '#ff7700';
+      bottomColor = '#4a2200';
+    }
+
+    const grad = ctx.createLinearGradient(enemy.x, enemy.y, enemy.x, enemy.y + ENEMY_HEIGHT);
+    grad.addColorStop(0, topColor);
+    grad.addColorStop(1, bottomColor);
+
+    ctx.save();
+    ctx.shadowBlur = 8;
+    ctx.shadowColor = neonColor;
+    ctx.fillStyle = grad;
+    drawRoundedRect(ctx, enemy.x, enemy.y, ENEMY_WIDTH, ENEMY_HEIGHT, 6);
+    ctx.fill();
+    ctx.restore();
+
+    ctx.save();
+    ctx.strokeStyle = neonColor;
+    ctx.lineWidth = 1.5;
+    drawRoundedRect(ctx, enemy.x, enemy.y, ENEMY_WIDTH, ENEMY_HEIGHT, 6);
+    ctx.stroke();
+    ctx.restore();
+
+    ctx.save();
+    ctx.beginPath();
+    ctx.moveTo(enemy.x + 6, enemy.y + 3);
+    ctx.lineTo(enemy.x + ENEMY_WIDTH - 6, enemy.y + 3);
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.45)';
+    ctx.lineWidth = 1.2;
+    ctx.stroke();
+    ctx.restore();
+
+    if (enemy.hp === 1) {
+      ctx.save();
+      ctx.beginPath();
+      ctx.moveTo(enemy.x + 10, enemy.y + 8);
+      ctx.lineTo(enemy.x + 18, enemy.y + 16);
+      ctx.lineTo(enemy.x + 14, enemy.y + 22);
+      ctx.moveTo(enemy.x + 50, enemy.y + 22);
+      ctx.lineTo(enemy.x + 42, enemy.y + 14);
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.25)';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+      ctx.restore();
+    } else if (enemy.hp === 2) {
+      ctx.save();
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(enemy.x + 5, enemy.y + 10);
+      ctx.lineTo(enemy.x + 5, enemy.y + 5);
+      ctx.lineTo(enemy.x + 10, enemy.y + 5);
+      ctx.moveTo(enemy.x + ENEMY_WIDTH - 5, enemy.y + 10);
+      ctx.lineTo(enemy.x + ENEMY_WIDTH - 5, enemy.y + 5);
+      ctx.lineTo(enemy.x + ENEMY_WIDTH - 10, enemy.y + 5);
+      ctx.stroke();
+      ctx.restore();
+    } else if (enemy.hp === 3) {
+      ctx.save();
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.15)';
+      ctx.fillRect(enemy.x + 4, enemy.y + 13, ENEMY_WIDTH - 8, 4);
+      ctx.restore();
+    } else if (enemy.hp >= 4) {
+      ctx.save();
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.25)';
+      ctx.lineWidth = 1;
+      drawRoundedRect(ctx, enemy.x + 3, enemy.y + 3, ENEMY_WIDTH - 6, ENEMY_HEIGHT - 6, 4);
+      ctx.stroke();
+      ctx.restore();
+    }
 
     ctx.fillStyle = HP_TEXT_COLOR;
     ctx.fillText(

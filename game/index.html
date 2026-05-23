@@ -8,24 +8,29 @@
         body {
             margin: 0;
             padding: 0;
-            background-color: #0f0f1a;
+            background-color: #030308;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            font-family: sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             color: white;
+            user-select: none;
+            -webkit-user-select: none;
         }
         #game-container {
             position: relative;
             width: 480px;
-            height: 640px;
-            background-color: #1a1a2e;
+            height: 800px;
+            background: #06060c url('../assets/backgrounds/lobby-bg.png') no-repeat center/cover;
             overflow: hidden;
-            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            box-shadow: 0 0 35px rgba(0, 255, 255, 0.25), 0 0 15px rgba(255, 0, 255, 0.15);
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            border-radius: 12px;
         }
         canvas {
             display: block;
+            background-color: transparent;
         }
         .scene {
             position: absolute;
@@ -37,43 +42,88 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
+            background-color: rgba(5, 5, 12, 0.65);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            box-sizing: border-box;
         }
         .scene.active {
             display: flex;
         }
         h1 {
-            font-size: 48px;
+            font-size: 40px;
             margin-bottom: 40px;
-            letter-spacing: 2px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
         }
         button {
-            padding: 15px 40px;
-            font-size: 24px;
-            background-color: #4a4e69;
-            color: white;
-            border: none;
+            padding: 12px 35px;
+            font-size: 20px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #3d0080, #00134d);
+            color: #ffffff;
+            border: 1px solid rgba(0, 255, 255, 0.4);
             border-radius: 8px;
             cursor: pointer;
-            transition: background-color 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.2), inset 0 0 10px rgba(0, 255, 255, 0.1);
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
         button:hover {
-            background-color: #9a8c98;
+            background: linear-gradient(135deg, #00b3b3, #00134d);
+            border-color: #00ffff;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.5), inset 0 0 15px rgba(0, 255, 255, 0.3);
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
+            transform: translateY(-2px);
+        }
+        button:active {
+            transform: translateY(1px);
         }
         
         /* In-game specific UI */
         #scene-ingame {
+            background-color: transparent;
+            backdrop-filter: none;
+            -webkit-backdrop-filter: none;
             justify-content: flex-start;
             pointer-events: none; /* Let clicks pass through to canvas */
         }
         #ui-hud {
             width: 100%;
-            padding: 15px;
+            padding: 15px 20px;
             box-sizing: border-box;
             display: flex;
             justify-content: space-between;
-            font-size: 18px;
+            align-items: center;
+            font-size: 16px;
             font-weight: bold;
+            font-family: monospace, sans-serif;
             pointer-events: auto;
+            background: rgba(10, 10, 20, 0.55);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0, 255, 255, 0.15);
+            color: #e0e0f5;
+            text-shadow: 0 0 5px rgba(0, 255, 255, 0.3);
+        }
+        .hud-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .hud-label {
+            font-size: 9px;
+            color: #8080a0;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 2px;
+        }
+        .hud-value {
+            font-size: 16px;
+            font-weight: bold;
+            color: #00ffff;
+            text-shadow: 0 0 8px rgba(0, 255, 255, 0.6);
         }
         #skill-popup {
             display: none;
@@ -81,63 +131,227 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background-color: rgba(26, 26, 46, 0.95);
-            padding: 30px;
-            border-radius: 12px;
-            border: 2px solid #4a4e69;
+            background-color: rgba(5, 5, 12, 0.88);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            padding: 22px;
+            border-radius: 16px;
+            border: 1px solid rgba(0, 255, 255, 0.35);
             text-align: center;
             pointer-events: auto;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.8), 0 0 20px rgba(0, 255, 255, 0.2);
             z-index: 10;
+            width: 320px;
+            box-sizing: border-box;
+            flex-direction: column;
         }
         #skill-popup h2 {
             margin-top: 0;
-            margin-bottom: 20px;
-            color: #f2e9e4;
+            margin-bottom: 15px;
+            color: #00ffff;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.4);
+            font-size: 24px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
         }
-        #skill-popup button {
-            display: block;
-            width: 100%;
+        .skill-option {
+            display: flex;
+            align-items: center;
+            background: rgba(15, 15, 30, 0.75);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 10px 15px;
             margin: 10px 0;
-            padding: 12px 20px;
-            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            text-align: left;
+        }
+        .skill-option:hover {
+            background: rgba(0, 255, 255, 0.12);
+            border-color: rgba(0, 255, 255, 0.45);
+            box-shadow: 0 0 12px rgba(0, 255, 255, 0.18);
+            transform: scale(1.02);
+        }
+        .skill-option img {
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            margin-right: 15px;
+            box-shadow: 0 0 8px rgba(0,0,0,0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .skill-info {
+            display: flex;
+            flex-direction: column;
+        }
+        .skill-title {
+            font-size: 15px;
+            font-weight: bold;
+            color: #00ffff;
+            margin-bottom: 2px;
+            text-shadow: 0 0 5px rgba(0, 255, 255, 0.3);
+        }
+        .skill-desc {
+            font-size: 11px;
+            color: #b0b0d0;
+        }
+        #scene-gameover h1 {
+            color: #ff3333;
+            text-shadow: 0 0 15px rgba(255, 51, 51, 0.6), 0 0 30px rgba(255, 51, 51, 0.3);
+            font-size: 44px;
+            letter-spacing: 4px;
+            font-weight: 900;
+        }
+        @keyframes splashAnim {
+            0% { opacity: 0; transform: translate(-50%, -60%); }
+            15% { opacity: 1; transform: translate(-50%, -50%); }
+            85% { opacity: 1; transform: translate(-50%, -50%); }
+            100% { opacity: 0; transform: translate(-50%, -40%); }
+        }
+        .leaderboard-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 12px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .leaderboard-item:nth-child(odd) {
+            background-color: rgba(255,255,255,0.02);
+        }
+        .rank-highlight {
+            color: #00ffff;
+            font-weight: bold;
+        }
+        .shop-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 12px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            background: rgba(15, 15, 30, 0.4);
+            border-radius: 8px;
+            margin: 8px 0;
+        }
+        .shop-item-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .shop-item-name {
+            font-size: 14px;
+            font-weight: bold;
+            color: #ffffff;
+        }
+        .shop-item-desc {
+            font-size: 11px;
+            color: #8080a0;
         }
     </style>
 </head>
 <body>
 
 <div id="game-container">
-    <canvas id="gameCanvas" width="480" height="640"></canvas>
+    <canvas id="gameCanvas" width="480" height="800"></canvas>
 
     <!-- Scene 1: Lobby -->
     <div id="scene-lobby" class="scene active">
-        <h1 id="game-title">더 볼 (The Ball)</h1>
+        <img id="game-logo" src="../assets/ui/logo.png" alt="더 볼 (The Ball)" style="width: 320px; height: auto; margin-bottom: 45px; filter: drop-shadow(0 0 15px rgba(0, 255, 255, 0.45));">
         <button id="start-btn" type="button">시작</button>
+        <button id="lobby-leaderboard-btn" type="button" style="margin-top: 15px; padding: 8px 18px; font-size: 13px; background: rgba(15, 15, 30, 0.5); border: 1px solid rgba(0, 255, 255, 0.2); border-radius: 20px; text-transform: none; letter-spacing: 1px;">🏆 LEADERBOARD</button>
+        <button id="lobby-shop-btn" type="button" style="margin-top: 12px; padding: 8px 18px; font-size: 13px; background: rgba(15, 15, 30, 0.5); border: 1px solid rgba(0, 255, 255, 0.2); border-radius: 20px; text-transform: none; letter-spacing: 1px;">🛒 BALL SHOP</button>
+        
+        <div style="margin-top: 20px; display: flex; align-items: center; gap: 10px;">
+            <button id="lobby-sound-toggle" type="button" style="padding: 6px 12px; font-size: 11px; background: rgba(15, 15, 30, 0.5); border: 1px solid rgba(0, 255, 255, 0.2); border-radius: 12px; text-transform: none; letter-spacing: 0.5px; box-shadow: none;">🔊 SOUND ON</button>
+            <select id="lobby-bgm-select" style="background: rgba(15,15,30,0.85); border: 1px solid rgba(0,255,255,0.25); border-radius: 12px; color: white; padding: 6px 10px; font-size: 11px; outline: none; font-family: monospace; font-weight: bold; cursor: pointer;">
+                <option value="auto">STAGE SYNC (AUTO)</option>
+                <option value="ingame1">TRACK 1: NEON GRID</option>
+                <option value="ingame2">TRACK 2: ODYSSEY DRONE</option>
+                <option value="ingame3">TRACK 3: CYBER TRANCE</option>
+            </select>
+        </div>
+        <div style="margin-top: 15px; display: flex; align-items: center; gap: 10px; background: rgba(15, 15, 30, 0.4); border: 1px solid rgba(0, 255, 255, 0.1); border-radius: 12px; padding: 6px 12px;">
+            <span style="font-size: 11px; color: #00ffff; font-family: monospace; font-weight: bold;">VOLUME:</span>
+            <input id="lobby-volume-slider" type="range" min="0" max="1" step="0.05" style="width: 100px; accent-color: #00ffff; background: rgba(255,255,255,0.1); height: 4px; border-radius: 2px; cursor: pointer; outline: none;">
+        </div>
     </div>
 
     <!-- Scene 2: In-game -->
     <div id="scene-ingame" class="scene">
         <div id="ui-hud">
-            <span>턴: 1</span>
-            <span>공: 1</span>
-            <span>공격력: 1</span>
-            <span>속도: 1</span>
+            <div class="hud-item">
+                <span class="hud-label">ROUND</span>
+                <span class="hud-value" id="hud-turn">01</span>
+            </div>
+            <div class="hud-item">
+                <span class="hud-label">BALLS</span>
+                <span class="hud-value" id="hud-balls">1</span>
+            </div>
+            <div class="hud-item">
+                <span class="hud-label">POW</span>
+                <span class="hud-value" id="hud-power">1</span>
+            </div>
+            <div class="hud-item">
+                <span class="hud-label">SPD</span>
+                <span class="hud-value" id="hud-speed">1</span>
+            </div>
+            <div class="hud-item">
+                <span class="hud-label">GOLD</span>
+                <span class="hud-value" id="hud-gold" style="color: #ffd700; text-shadow: 0 0 8px rgba(255, 215, 0, 0.6);">0</span>
+            </div>
+            
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <button id="hud-shop-btn" type="button" style="padding: 4px 8px; font-size: 10px; background: rgba(15, 15, 30, 0.5); border: 1px solid rgba(0, 255, 255, 0.2); border-radius: 6px; cursor: pointer; color: white; box-shadow: none; font-weight: bold; text-transform: none; letter-spacing: 0;">🛒 SHOP</button>
+                <div style="display: flex; align-items: center; gap: 4px; background: rgba(15,15,30,0.5); border: 1px solid rgba(0,255,255,0.15); padding: 2px 6px; border-radius: 6px;">
+                    <span style="font-size: 9px; color: #00ffff; font-family: monospace;">VOL</span>
+                    <input id="hud-volume-slider" type="range" min="0" max="1" step="0.05" style="width: 50px; accent-color: #00ffff; background: rgba(255,255,255,0.1); height: 3px; border-radius: 1px; cursor: pointer; outline: none;">
+                </div>
+                <button id="hud-sound-toggle" type="button" style="padding: 4px 10px; font-size: 11px; background: rgba(15, 15, 30, 0.5); border: 1px solid rgba(0, 255, 255, 0.2); border-radius: 6px; cursor: pointer; color: white; letter-spacing: 0.5px; text-transform: none; box-shadow: none;">🔊 ON</button>
+            </div>
         </div>
-        <div id="debug-list"></div>
+        <div id="debug-list" style="display: none;"></div>
         
         <div id="skill-popup">
             <h2>스킬 선택</h2>
-            <button id="skill-btn-1" type="button" onclick="window.applySkill(1)">파워 업 (데미지+1)</button>
-            <button id="skill-btn-2" type="button" onclick="window.applySkill(2)">멀티볼 (공+2)</button>
-            <button id="skill-btn-3" type="button" onclick="window.applySkill(3)">스피드 업 (속도+3)</button>
         </div>
-
     </div>
 
     <!-- Scene 3: Game Over -->
     <div id="scene-gameover" class="scene">
         <h1>게임 오버</h1>
+        <div style="font-size: 20px; color: #00ffff; text-shadow: 0 0 8px rgba(0,255,255,0.5); margin-bottom: 20px; font-family: monospace; font-weight: bold;">SCORE: <span id="gameover-score">0</span></div>
+        
+        <div id="leaderboard-input-section" style="margin-bottom: 25px; text-align: center; display: flex; flex-direction: column; align-items: center;">
+            <span style="font-size: 11px; color: #8080a0; margin-bottom: 8px; letter-spacing: 1px; font-family: monospace;">REGISTER YOUR RECORD</span>
+            <input id="leaderboard-name-input" type="text" placeholder="ENTER NAME" maxlength="10" style="padding: 10px 15px; background: rgba(15,15,30,0.75); border: 1px solid rgba(0,255,255,0.35); border-radius: 8px; color: white; text-align: center; font-size: 16px; letter-spacing: 2px; width: 200px; outline: none; margin-bottom: 12px; font-family: monospace;">
+            <button id="leaderboard-submit-btn" type="button" style="font-size: 13px; padding: 8px 25px;">SUBMIT</button>
+        </div>
+        
         <button type="button" onclick="window.restartGame()">다시 시작</button>
+    </div>
+
+    <div id="stage-splash" style="display: none; position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); z-index: 15; text-align: center; pointer-events: none;">
+        <div id="stage-splash-subtitle" style="font-size: 13px; color: #00ffff; letter-spacing: 3px; text-shadow: 0 0 8px rgba(0,255,255,0.6); margin-bottom: 8px; font-weight: bold;">STAGE COMPLETED</div>
+        <div id="stage-splash-title" style="font-size: 30px; font-weight: bold; color: #ffffff; letter-spacing: 4px; text-shadow: 0 0 15px rgba(255,255,255,0.8); text-transform: uppercase;">STAGE 2: COLD ODYSSEY</div>
+    </div>
+
+    <div id="leaderboard-popup" style="display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: rgba(5, 5, 12, 0.94); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); padding: 25px; border-radius: 16px; border: 1px solid rgba(0, 255, 255, 0.35); text-align: center; pointer-events: auto; box-shadow: 0 15px 40px rgba(0,0,0,0.8), 0 0 20px rgba(0, 255, 255, 0.2); z-index: 20; width: 340px; box-sizing: border-box; flex-direction: column;">
+        <h2 style="color: #00ffff; text-shadow: 0 0 10px rgba(0,255,255,0.4); margin-top: 0; margin-bottom: 18px; font-size: 24px; letter-spacing: 2px;">LEADERBOARD</h2>
+        <div id="leaderboard-list" style="max-height: 250px; overflow-y: auto; margin-bottom: 20px; text-align: left; font-family: monospace; font-size: 12px; border: 1px solid rgba(255,255,255,0.05); border-radius: 8px; background: rgba(0,0,0,0.25);">
+        </div>
+        <button id="leaderboard-close-btn" type="button" style="font-size: 14px; padding: 8px 20px;">CLOSE</button>
+    </div>
+
+    <div id="shop-popup" style="display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: rgba(5, 5, 12, 0.94); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); padding: 25px; border-radius: 16px; border: 1px solid rgba(0, 255, 255, 0.35); text-align: center; pointer-events: auto; box-shadow: 0 15px 40px rgba(0,0,0,0.8), 0 0 20px rgba(0, 255, 255, 0.2); z-index: 20; width: 340px; box-sizing: border-box; flex-direction: column;">
+        <h2 style="color: #ffd700; text-shadow: 0 0 10px rgba(255,215,0,0.4); margin-top: 0; margin-bottom: 10px; font-size: 24px; letter-spacing: 2px;">NEON SHOP</h2>
+        <div id="shop-gold-display" style="font-size: 15px; color: #ffd700; font-family: monospace; font-weight: bold; margin-bottom: 15px;">MY GOLD: 0</div>
+        
+        <div style="display: flex; gap: 8px; margin-bottom: 15px; justify-content: center; width: 100%;">
+            <button id="shop-tab-balls" type="button" class="shop-tab" style="font-size: 11px; padding: 6px 12px; background: rgba(0,255,255,0.15); border-color: #00ffff; flex: 1; text-transform: none; letter-spacing: 1px;">BALL SKINS</button>
+            <button id="shop-tab-chars" type="button" class="shop-tab" style="font-size: 11px; padding: 6px 12px; background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.15); flex: 1; text-transform: none; letter-spacing: 1px;">CHARACTERS</button>
+        </div>
+
+        <div id="shop-list" style="max-height: 250px; overflow-y: auto; margin-bottom: 20px; text-align: left; width: 100%;">
+        </div>
+        <button id="shop-close-btn" type="button" style="font-size: 14px; padding: 8px 20px;">CLOSE</button>
     </div>
 </div>
 
@@ -166,8 +380,9 @@
     import { startLoop } from './loop.js';
     import { fullReset } from './reset.js';
     import { applySkill } from './skill.js';
+    import { soundManager } from './sound-manager.js';
+    import { gameState } from './state.js';
 
-    // Track current scene
     window.GAME_SCENES = {
         current: 'scene-lobby'
     };
@@ -177,24 +392,34 @@
     let launcherInited = false;
 
     function changeScene(sceneId) {
-        // Hide all scenes
         document.querySelectorAll('.scene').forEach(el => {
             el.classList.remove('active');
         });
         
-        // Show target scene
         document.getElementById(sceneId).classList.add('active');
         window.GAME_SCENES.current = sceneId;
 
         if (sceneId === 'scene-ingame') {
+            updateStageBackground(gameState.현재_스테이지);
             startLoop(canvas, ctx);
             if (!launcherInited) {
                 initLauncher(canvas, ctx);
                 launcherInited = true;
             }
+            soundManager.playBGM('ingame', gameState.현재_스테이지);
+        } else if (sceneId === 'scene-lobby') {
+            updateStageBackground(1);
+            soundManager.playBGM('lobby');
+        } else if (sceneId === 'scene-gameover') {
+            const finalScore = gameState.현재_턴;
+            const scoreEl = document.getElementById('gameover-score');
+            if (scoreEl) scoreEl.textContent = String(finalScore);
+            document.getElementById('leaderboard-input-section').style.display = 'flex';
+            soundManager.playSFX('gameover');
+            soundManager.playBGM('gameover');
         }
 
-        // Draw canvas based on scene
+        wireUISounds();
         drawScene();
     }
 
@@ -203,7 +428,60 @@
     }
 
     function restartGame() {
+        document.getElementById('leaderboard-input-section').style.display = 'flex';
+        const input = document.getElementById('leaderboard-name-input');
+        if (input) input.value = '';
+        
         fullReset(canvas, ctx);
+
+        const hud = document.getElementById('ui-hud');
+        if (hud) {
+            hud.innerHTML = `
+                <div class="hud-item">
+                    <span class="hud-label">ROUND</span>
+                    <span class="hud-value" id="hud-turn">01</span>
+                </div>
+                <div class="hud-item">
+                    <span class="hud-label">BALLS</span>
+                    <span class="hud-value" id="hud-balls">1</span>
+                </div>
+                <div class="hud-item">
+                    <span class="hud-label">POW</span>
+                    <span class="hud-value" id="hud-power">1</span>
+                </div>
+                <div class="hud-item">
+                    <span class="hud-label">SPD</span>
+                    <span class="hud-value" id="hud-speed">1</span>
+                </div>
+                <div class="hud-item">
+                    <span class="hud-label">GOLD</span>
+                    <span class="hud-value" id="hud-gold" style="color: #ffd700; text-shadow: 0 0 8px rgba(255, 215, 0, 0.6);">0</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <button id="hud-shop-btn" type="button" style="padding: 4px 8px; font-size: 10px; background: rgba(15, 15, 30, 0.5); border: 1px solid rgba(0, 255, 255, 0.2); border-radius: 6px; cursor: pointer; color: white; box-shadow: none; font-weight: bold; text-transform: none; letter-spacing: 0;">🛒 SHOP</button>
+                    <div style="display: flex; align-items: center; gap: 4px; background: rgba(15,15,30,0.5); border: 1px solid rgba(0,255,255,0.15); padding: 2px 6px; border-radius: 6px;">
+                        <span style="font-size: 9px; color: #00ffff; font-family: monospace;">VOL</span>
+                        <input id="hud-volume-slider" type="range" min="0" max="1" step="0.05" style="width: 50px; accent-color: #00ffff; background: rgba(255,255,255,0.1); height: 3px; border-radius: 1px; cursor: pointer; outline: none;">
+                    </div>
+                    <button id="hud-sound-toggle" type="button" style="padding: 4px 10px; font-size: 11px; background: rgba(15, 15, 30, 0.5); border: 1px solid rgba(0, 255, 255, 0.2); border-radius: 6px; cursor: pointer; color: white; letter-spacing: 0.5px; text-transform: none; box-shadow: none;">🔊 ON</button>
+                </div>
+            `;
+            
+            document.getElementById('hud-sound-toggle')?.addEventListener('click', toggleSound);
+            document.getElementById('hud-shop-btn')?.addEventListener('click', showShop);
+            const hudSlider = document.getElementById('hud-volume-slider');
+            if (hudSlider) {
+                hudSlider.addEventListener('input', (e) => {
+                    soundManager.setVolume(parseFloat(e.target.value));
+                    updateVolumeSliders();
+                });
+            }
+            updateSoundButtons();
+            updateVolumeSliders();
+            updateGoldDisplay();
+            wireUISounds();
+        }
+
         changeScene('scene-ingame');
     }
 
@@ -212,19 +490,429 @@
     window.applySkill = applySkill;
     window.restartGame = restartGame;
 
-    // Wire buttons via addEventListener instead of relying on inline onclick
-    // resolving against window globals — keeps everything inside the module
-    // and works regardless of when globals get assigned.
     document.getElementById('start-btn')?.addEventListener('click', startGame);
 
+    function updateSoundButtons() {
+        const muted = soundManager.isMuted();
+        const lobbyBtn = document.getElementById('lobby-sound-toggle');
+        const hudBtn = document.getElementById('hud-sound-toggle');
+        
+        if (lobbyBtn) {
+            lobbyBtn.textContent = muted ? '🔇 SOUND OFF' : '🔊 SOUND ON';
+            lobbyBtn.style.borderColor = muted ? 'rgba(255, 51, 51, 0.4)' : 'rgba(0, 255, 255, 0.4)';
+        }
+        if (hudBtn) {
+            hudBtn.textContent = muted ? '🔇 OFF' : '🔊 ON';
+            hudBtn.style.borderColor = muted ? 'rgba(255, 51, 51, 0.4)' : 'rgba(0, 255, 255, 0.4)';
+        }
+    }
+
+    function toggleSound() {
+        soundManager.toggleMute();
+        updateSoundButtons();
+    }
+
+    function updateVolumeSliders() {
+        const vol = soundManager.getVolume();
+        const lobbySlider = document.getElementById('lobby-volume-slider');
+        const hudSlider = document.getElementById('hud-volume-slider');
+        if (lobbySlider) lobbySlider.value = vol;
+        if (hudSlider) hudSlider.value = vol;
+    }
+
+    document.getElementById('lobby-volume-slider')?.addEventListener('input', (e) => {
+        soundManager.setVolume(parseFloat(e.target.value));
+        updateVolumeSliders();
+    });
+    document.getElementById('hud-volume-slider')?.addEventListener('input', (e) => {
+        soundManager.setVolume(parseFloat(e.target.value));
+        updateVolumeSliders();
+    });
+
+    document.getElementById('lobby-sound-toggle')?.addEventListener('click', toggleSound);
+    document.getElementById('hud-sound-toggle')?.addEventListener('click', toggleSound);
+
+    let bgmStarted = false;
+    function ensureAudioResumed() {
+        if (!bgmStarted) {
+            soundManager.resume();
+            soundManager.playBGM('lobby');
+            bgmStarted = true;
+            updateSoundButtons();
+            updateBGMSelects();
+            updateVolumeSliders();
+            document.removeEventListener('click', ensureAudioResumed);
+            document.removeEventListener('keydown', ensureAudioResumed);
+        }
+    }
+    document.addEventListener('click', ensureAudioResumed);
+    document.addEventListener('keydown', ensureAudioResumed);
+
+    function wireUISounds() {
+        const elements = document.querySelectorAll('button, .skill-option');
+        elements.forEach(el => {
+            if (el.dataset.soundsWired) return;
+            el.dataset.soundsWired = 'true';
+
+            el.addEventListener('mouseenter', () => {
+                soundManager.playSFX('ui-hover');
+            });
+            el.addEventListener('click', () => {
+                soundManager.playSFX('ui-click');
+            });
+        });
+    }
+
+    function triggerStageTransition(stage) {
+        const splash = document.getElementById('stage-splash');
+        const subtitle = document.getElementById('stage-splash-subtitle');
+        const title = document.getElementById('stage-splash-title');
+        
+        if (!splash || !subtitle || !title) return;
+
+        let titleText = '';
+        if (stage === 2) {
+            titleText = 'STAGE 2: COLD ODYSSEY';
+        } else if (stage === 3) {
+            titleText = 'STAGE 3: CYBER CORE';
+        }
+
+        title.textContent = titleText;
+        splash.style.display = 'block';
+        splash.style.animation = 'none';
+        splash.offsetHeight;
+        splash.style.animation = 'splashAnim 2.5s forwards';
+
+        updateStageBackground(stage);
+        soundManager.playBGM('ingame', stage);
+
+        setTimeout(() => {
+            splash.style.display = 'none';
+        }, 2500);
+    }
+
+    function updateStageBackground(stage) {
+        const container = document.getElementById('game-container');
+        if (!container) return;
+
+        let bgUrl = '';
+        let fallbackBg = '';
+        const activeStage = stage || 1;
+
+        if (activeStage === 1) {
+            bgUrl = "../assets/backgrounds/lobby-bg.png";
+            fallbackBg = "#06060c linear-gradient(180deg, #050510 0%, #0a0a20 100%)";
+        } else if (activeStage === 2) {
+            bgUrl = "../assets/backgrounds/stage2-bg.png";
+            fallbackBg = "#050508 linear-gradient(135deg, #100a1c 0%, #05050a 100%)";
+        } else {
+            bgUrl = "../assets/backgrounds/stage3-bg.png";
+            fallbackBg = "#04040a linear-gradient(135deg, #051414 0%, #030308 100%)";
+        }
+
+        const img = new Image();
+        img.onload = () => {
+            container.style.background = `#06060c url('${bgUrl}') no-repeat center/cover`;
+        };
+        img.onerror = () => {
+            container.style.background = fallbackBg;
+        };
+        img.src = bgUrl;
+    }
+
+    window.triggerStageTransition = triggerStageTransition;
+
+    const SHOP_SKINS = [
+        { id: 'basic', name: '기본 볼', desc: '표준형 3D 화이트 아케이드 볼', price: 0 },
+        { id: 'laser', name: '레이저 볼', desc: '네온 하늘색 레이저 꼬리 궤적 이펙트', price: 10 },
+        { id: 'missile', name: '미사일 볼', desc: '날아가는 방향으로 꼬리가 회전하는 적색 로켓 미사일', price: 20 },
+        { id: 'star', name: '황금 스타', desc: '회전 비행하며 골드 스타 파편을 흩뿌리는 황금별', price: 30 }
+    ];
+
+    const SHOP_CHARS = [
+        { id: 'frog', name: '개구리 중사', desc: '기본 전신 캐릭터. 블래스터 소총 조준 사격', price: 0 },
+        { id: 'robot', name: '사이버 로봇', desc: '미래 로봇 캐릭터. 숄더 레이저 캐논 조준 사격', price: 20 }
+    ];
+
+    let currentShopTab = 'balls';
+
+    function updateGoldDisplay() {
+        const hudGold = document.getElementById('hud-gold');
+        const shopGold = document.getElementById('shop-gold-display');
+        if (hudGold) hudGold.textContent = String(gameState.골드_개수);
+        if (shopGold) shopGold.textContent = `MY GOLD: ${gameState.골드_개수}`;
+    }
+
+    window.updateGoldDisplay = updateGoldDisplay;
+
+    function showShop() {
+        const popup = document.getElementById('shop-popup');
+        const listContainer = document.getElementById('shop-list');
+        if (!popup || !listContainer) return;
+
+        updateGoldDisplay();
+        updateTabStyles();
+
+        let html = '';
+        if (currentShopTab === 'balls') {
+            SHOP_SKINS.forEach(skin => {
+                const isOwned = gameState.보유한_볼_리스트.includes(skin.id);
+                const isEquipped = gameState.장착된_볼 === skin.id;
+
+                let buttonHtml = '';
+                if (isEquipped) {
+                    buttonHtml = `<button type="button" style="font-size:11px; padding:6px 12px; background:linear-gradient(135deg, #00ffff, #00134d); border-color:#00ffff; cursor:default;" disabled>EQUIPPED</button>`;
+                } else if (isOwned) {
+                    buttonHtml = `<button type="button" class="shop-action-btn" data-action="equip" data-id="${skin.id}" style="font-size:11px; padding:6px 12px; background:#4a4e69; border-color:rgba(255,255,255,0.2);">EQUIP</button>`;
+                } else {
+                    const canBuy = gameState.골드_개수 >= skin.price;
+                    const btnBg = canBuy ? 'linear-gradient(135deg, #ffcc00, #4a2200)' : '#222';
+                    const btnBorder = canBuy ? '#ffcc00' : '#444';
+                    buttonHtml = `<button type="button" class="shop-action-btn" data-action="buy" data-id="${skin.id}" style="font-size:11px; padding:6px 12px; background:${btnBg}; border-color:${btnBorder};" ${canBuy ? '' : 'disabled'}>${skin.price} GOLD</button>`;
+                }
+
+                html += `
+                    <div class="shop-item">
+                        <div class="shop-item-info">
+                            <span class="shop-item-name">${skin.name}</span>
+                            <span class="shop-item-desc">${skin.desc}</span>
+                        </div>
+                        <div>${buttonHtml}</div>
+                    </div>
+                `;
+            });
+        } else {
+            SHOP_CHARS.forEach(char => {
+                const isOwned = gameState.보유한_캐릭터_리스트.includes(char.id);
+                const isEquipped = gameState.장착된_캐릭터 === char.id;
+
+                let buttonHtml = '';
+                if (isEquipped) {
+                    buttonHtml = `<button type="button" style="font-size:11px; padding:6px 12px; background:linear-gradient(135deg, #00ffff, #00134d); border-color:#00ffff; cursor:default;" disabled>EQUIPPED</button>`;
+                } else if (isOwned) {
+                    buttonHtml = `<button type="button" class="shop-action-btn" data-action="equip-char" data-id="${char.id}" style="font-size:11px; padding:6px 12px; background:#4a4e69; border-color:rgba(255,255,255,0.2);">EQUIP</button>`;
+                } else {
+                    const canBuy = gameState.골드_개수 >= char.price;
+                    const btnBg = canBuy ? 'linear-gradient(135deg, #ffcc00, #4a2200)' : '#222';
+                    const btnBorder = canBuy ? '#ffcc00' : '#444';
+                    buttonHtml = `<button type="button" class="shop-action-btn" data-action="buy-char" data-id="${char.id}" style="font-size:11px; padding:6px 12px; background:${btnBg}; border-color:${btnBorder};" ${canBuy ? '' : 'disabled'}>${char.price} GOLD</button>`;
+                }
+
+                html += `
+                    <div class="shop-item">
+                        <div class="shop-item-info">
+                            <span class="shop-item-name">${char.name}</span>
+                            <span class="shop-item-desc">${char.desc}</span>
+                        </div>
+                        <div>${buttonHtml}</div>
+                    </div>
+                `;
+            });
+        }
+
+        listContainer.innerHTML = html;
+
+        listContainer.querySelectorAll('.shop-action-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const action = btn.getAttribute('data-action');
+                const id = btn.getAttribute('data-id');
+                if (action === 'equip') {
+                    equipBall(id);
+                } else if (action === 'buy') {
+                    buyBall(id);
+                } else if (action === 'equip-char') {
+                    equipChar(id);
+                } else if (action === 'buy-char') {
+                    buyChar(id);
+                }
+            });
+        });
+
+        popup.style.display = 'flex';
+    }
+
+    function updateTabStyles() {
+        const tabBalls = document.getElementById('shop-tab-balls');
+        const tabChars = document.getElementById('shop-tab-chars');
+        if (!tabBalls || !tabChars) return;
+
+        if (currentShopTab === 'balls') {
+            tabBalls.style.background = 'rgba(0, 255, 255, 0.15)';
+            tabBalls.style.borderColor = '#00ffff';
+            tabChars.style.background = 'rgba(255, 255, 255, 0.05)';
+            tabChars.style.borderColor = 'rgba(255, 255, 255, 0.15)';
+        } else {
+            tabChars.style.background = 'rgba(0, 255, 255, 0.15)';
+            tabChars.style.borderColor = '#00ffff';
+            tabBalls.style.background = 'rgba(255, 255, 255, 0.05)';
+            tabBalls.style.borderColor = 'rgba(255, 255, 255, 0.15)';
+        }
+    }
+
+    function hideShop() {
+        const popup = document.getElementById('shop-popup');
+        if (popup) popup.style.display = 'none';
+    }
+
+    function equipBall(id) {
+        if (!gameState.보유한_볼_리스트.includes(id)) return;
+        gameState.장착된_볼 = id;
+        localStorage.setItem('game_equipped_ball', id);
+        soundManager.playSFX('ui-click');
+        showShop();
+    }
+
+    function buyBall(id) {
+        const skin = SHOP_SKINS.find(s => s.id === id);
+        if (!skin || gameState.보유한_볼_리스트.includes(id)) return;
+        if (gameState.골드_개수 < skin.price) return;
+
+        gameState.골드_개수 -= skin.price;
+        localStorage.setItem('game_gold', String(gameState.골드_개수));
+
+        gameState.보유한_볼_리스트.push(id);
+        localStorage.setItem('game_owned_balls', JSON.stringify(gameState.보유한_볼_리스트));
+
+        gameState.장착된_볼 = id;
+        localStorage.setItem('game_equipped_ball', id);
+
+        soundManager.playSFX('skill-power');
+        showShop();
+    }
+
+    function equipChar(id) {
+        if (!gameState.보유한_캐릭터_리스트.includes(id)) return;
+        gameState.장착된_캐릭터 = id;
+        localStorage.setItem('game_equipped_character', id);
+        soundManager.playSFX('ui-click');
+        showShop();
+    }
+
+    function buyChar(id) {
+        const char = SHOP_CHARS.find(c => c.id === id);
+        if (!char || gameState.보유한_캐릭터_리스트.includes(id)) return;
+        if (gameState.골드_개수 < char.price) return;
+
+        gameState.골드_개수 -= char.price;
+        localStorage.setItem('game_gold', String(gameState.골드_개수));
+
+        gameState.보유한_캐릭터_리스트.push(id);
+        localStorage.setItem('game_owned_characters', JSON.stringify(gameState.보유한_캐릭터_리스트));
+
+        gameState.장착된_캐릭터 = id;
+        localStorage.setItem('game_equipped_character', id);
+
+        soundManager.playSFX('skill-power');
+        showShop();
+    }
+
+    function getLeaderboard() {
+        try {
+            return JSON.parse(localStorage.getItem('game_leaderboard')) || [];
+        } catch (e) {
+            return [];
+        }
+    }
+
+    function saveScoreToLeaderboard(name) {
+        if (!name || name.trim() === '') return;
+        const leaderboard = getLeaderboard();
+        leaderboard.push({
+            name: name.trim().toUpperCase(),
+            score: gameState.현재_턴,
+            stage: gameState.현재_스테이지,
+            date: new Date().toLocaleDateString()
+        });
+        leaderboard.sort((a, b) => b.score - a.score);
+        localStorage.setItem('game_leaderboard', JSON.stringify(leaderboard.slice(0, 10)));
+    }
+
+    function showLeaderboard() {
+        const popup = document.getElementById('leaderboard-popup');
+        const listContainer = document.getElementById('leaderboard-list');
+        if (!popup || !listContainer) return;
+
+        const leaderboard = getLeaderboard();
+        if (leaderboard.length === 0) {
+            listContainer.innerHTML = '<div style="padding:15px; color:#8080a0; text-align:center;">NO RECORDS YET</div>';
+        } else {
+            let html = '';
+            leaderboard.forEach((item, index) => {
+                const isTop3 = index < 3;
+                const rankClass = isTop3 ? 'rank-highlight' : '';
+                html += `
+                    <div class="leaderboard-item">
+                        <div>
+                            <span class="${rankClass}">#${index + 1}</span>
+                            <span style="margin-left: 10px; font-weight: bold; color: #fff;">${item.name}</span>
+                        </div>
+                        <div style="color: #00ffff;">ROUND ${item.score} <span style="font-size:10px; color:#8080a0;">(STG ${item.stage})</span></div>
+                    </div>
+                `;
+            });
+            listContainer.innerHTML = html;
+        }
+        popup.style.display = 'flex';
+    }
+
+    function hideLeaderboard() {
+        const popup = document.getElementById('leaderboard-popup');
+        if (popup) popup.style.display = 'none';
+    }
+
+    document.getElementById('lobby-leaderboard-btn')?.addEventListener('click', showLeaderboard);
+    document.getElementById('leaderboard-close-btn')?.addEventListener('click', hideLeaderboard);
+    
+    document.getElementById('lobby-shop-btn')?.addEventListener('click', showShop);
+    document.getElementById('hud-shop-btn')?.addEventListener('click', showShop);
+    document.getElementById('shop-close-btn')?.addEventListener('click', hideShop);
+
+    document.getElementById('shop-tab-balls')?.addEventListener('click', () => {
+        currentShopTab = 'balls';
+        showShop();
+    });
+    document.getElementById('shop-tab-chars')?.addEventListener('click', () => {
+        currentShopTab = 'chars';
+        showShop();
+    });
+
+    document.getElementById('leaderboard-submit-btn')?.addEventListener('click', () => {
+        const input = document.getElementById('leaderboard-name-input');
+        if (input && input.value.trim() !== '') {
+            saveScoreToLeaderboard(input.value);
+            input.value = '';
+            document.getElementById('leaderboard-input-section').style.display = 'none';
+            showLeaderboard();
+        }
+    });
+
+    function updateBGMSelects() {
+        const val = gameState.bgm_트랙_선택;
+        const lobbySelect = document.getElementById('lobby-bgm-select');
+        if (lobbySelect) lobbySelect.value = val;
+    }
+
+    function changeBGMTrack(trackVal) {
+        gameState.bgm_트랙_선택 = trackVal;
+        soundManager.setBGMTrack(trackVal);
+        updateBGMSelects();
+    }
+
+    document.getElementById('lobby-bgm-select')?.addEventListener('change', (e) => {
+        changeBGMTrack(e.target.value);
+    });
+
+    wireUISounds();
+    updateSoundButtons();
+    updateVolumeSliders();
+    updateGoldDisplay();
+
     function drawScene() {
-        // Clear canvas
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
         if (window.GAME_SCENES.current !== 'scene-ingame') return;
     }
 
-    // Initial draw
     drawScene();
 </script>
 

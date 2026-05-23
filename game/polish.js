@@ -1,62 +1,12 @@
-let audioCtx = null;
+import { soundManager } from './sound-manager.js';
 const flashes = [];
 
-function initAudio() {
-  if (!audioCtx) {
-    try {
-      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    } catch (e) {
-      console.warn('Web Audio API not supported or blocked', e);
-    }
-  }
-}
-
 export function playLaunchSound() {
-  initAudio();
-  if (!audioCtx) return;
-  
-  try {
-    const osc = audioCtx.createOscillator();
-    const gain = audioCtx.createGain();
-    
-    osc.type = 'square';
-    osc.frequency.setValueAtTime(440, audioCtx.currentTime);
-    
-    gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.05);
-    
-    osc.connect(gain);
-    gain.connect(audioCtx.destination);
-    
-    osc.start();
-    osc.stop(audioCtx.currentTime + 0.05);
-  } catch (e) {
-    console.warn('Audio play failed', e);
-  }
+  soundManager.playSFX('ball-launch');
 }
 
 export function playKillSound() {
-  initAudio();
-  if (!audioCtx) return;
-  
-  try {
-    const osc = audioCtx.createOscillator();
-    const gain = audioCtx.createGain();
-    
-    osc.type = 'sine';
-    osc.frequency.setValueAtTime(880, audioCtx.currentTime);
-    
-    gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
-    
-    osc.connect(gain);
-    gain.connect(audioCtx.destination);
-    
-    osc.start();
-    osc.stop(audioCtx.currentTime + 0.1);
-  } catch (e) {
-    console.warn('Audio play failed', e);
-  }
+  soundManager.playSFX('enemy-kill');
 }
 
 export function flashEnemy(ctx, enemy) {
@@ -81,6 +31,7 @@ export function updateEffects(ctx) {
 export function screenShake(canvas, duration = 300) {
   if (!canvas) return;
   
+  soundManager.playSFX('screen-shake');
   const startTime = performance.now();
   
   function shake() {

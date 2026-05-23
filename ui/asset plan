@@ -1,0 +1,106 @@
+mplementation Plan - Asset Generation and Audio Synthesis Integration
+This plan details the automatic creation and integration of visual assets, premium CSS styling, and an advanced Web Audio API procedural sound engine for "The Ball". This will fulfill the specifications in 
+ui/asset-list.md
+ and 
+ui/sound-list.md
+ instantly, requiring zero external file downloads while delivering a premium, immersive arcade experience.
+
+User Review Required
+IMPORTANT
+
+No Audio File Downloads Required: To ensure the game runs immediately and flawlessly on your system, we will build a procedural Web Audio API sound synthesizer engine directly in JavaScript. It will synthesize all 18 sound effects and 3 backgrounds music loops (Lobby, In-game, Game Over) dynamically in real-time. It will also be ready to play actual .mp3/.ogg audio files if you drop them into the assets/sounds/ directory later.
+
+TIP
+
+Rich Aesthetics and Glassmorphism: We will redesign the UI layout using modern CSS variables, neon glowing drop-shadows, sleek transitions, responsive alignment, and a high-end glassmorphic skill popup to provide a premium cyberpunk feel.
+
+Proposed Changes
+📁 Directory Creation
+We will initialize the recommended assets directory structure:
+
+assets/ui/, assets/icons/, assets/backgrounds/
+assets/sounds/sfx/, assets/sounds/bgm/
+🎨 Visual Asset Generation
+We will use the generate_image tool to produce highly-curated assets:
+
+Lobby Background (assets/backgrounds/lobby-bg.png): A high-end, dark, abstract neon/cyberpunk space backdrop.
+Game Logo (assets/ui/logo.png): A sleek, futuristic glow logo reading "THE BALL".
+Skill Icons:
+Power Up (assets/icons/skill-power.png): Neon-orange explosive burst icon.
+Multi Ball (assets/icons/skill-multi.png): Neon-cyan triple splitting spheres icon.
+Speed Up (assets/icons/skill-speed.png): Neon-yellow/green double lightning bolts icon.
+🔊 Audio Synthesis Engine (game/sound-manager.js)
+[NEW] 
+sound-manager.js
+We will write a comprehensive sound synthesizer and playback manager using standard Web Audio API.
+
+Audio Synthesis Engine:
+Lobby BGM: A soothing, slow ambient chord progression (Am - F - C - G) synthesized using lowpass-filtered sine waves and a delay/echo feedback loop.
+In-game BGM: An energetic synthwave bassline and running pulse pattern.
+Gameover BGM: A melancholic, slowing, decaying minor-key arpeggio.
+18 Sound Effects: High-quality procedural synthesis with customizable parameters:
+ball-launch: Quick pitch sweep downwards (sine, 50ms)
+ball-wall: Fast high-pitch click (triangle, 30ms)
+ball-hit: Juicy impact pop (square, 80ms)
+ball-collect: Rising bubble sound (sine, 60ms)
+ball-all-collected: Double chime (triangle, 200ms)
+enemy-kill: Deep filtered noise explosion (noise + sine, 150ms)
+enemy-spawn: Low sweep "wub" (sine, 250ms)
+enemy-descend: Heavy mechanical thud (square, 300ms)
+enemy-deadline: Urgent warning buzz
+ui-click, ui-hover: Crisp clicks and subtle tick sounds
+skill-popup, skill-power, skill-multi, skill-speed: Specialized magical/digital power-up sound sweeps
+Audio Controllers:
+Volume control (Mute/Unmute, Master volume).
+Auto-starts audio context on user interaction (resolving modern browser blocking).
+Support for checking if actual local audio files exist in assets/ and auto-playing them instead of synthetic sound.
+🎮 Game Integration & Styling
+[MODIFY] 
+index.html
+Visual Polish:
+Implement full CSS styling overhaul matching #0f0f1a (lobby background image with dark overlay, glassmorphism card styling).
+Replace plain text skill list buttons with sleek flex-row button entries containing the generated skill icons.
+Add a Sound Toggle (🔊/🔇) Button in the HUD and Lobby.
+Logic Integration:
+Import soundManager and wire BGM triggers to scene changes (changeScene('scene-ingame') plays in-game BGM, etc.).
+Map all UI clicks and hover events to soundManager.playSFX().
+[MODIFY] 
+polish.js
+Delegate playLaunchSound() and playKillSound() directly to the centralized soundManager.
+Add custom screen shake audio trigger.
+[MODIFY] 
+ball.js
+, 
+collision.js
+, 
+skill.js
+, 
+loop.js
+Add triggers for new sound events (e.g. wall bounce, ball collection, enemy spawn, enemy descend, skill selections) at appropriate logic frames.
+Verification Plan
+Manual Verification
+Visual Appeal: Launch the web server python3 -m http.server 8765 and view the game locally at http://localhost:8765/game/index.html. Verify the neon visual style, lobby background, and glassmorphic card layout.
+Audio Synthesis Quality: Interact with the UI, launch balls, bounce off walls, destroy enemies, and select skills. Verify that BGM changes smoothly and all 18 sound events trigger their dedicated synthetic sound effects without any lag or performance drops.
+Mute/Unmute: Press the sound toggle button in the HUD/Lobby to verify muting works flawlessly.
+
+
+Task List - Asset Integration & Sound Synthesis
+[x] Step 1: Create local directory structure (assets/ folders)
+[x] Step 2: Generate visual assets using AI Image Generation
+[x] Lobby Background (assets/backgrounds/lobby-bg.png)
+[x] Game Logo (assets/ui/logo.png)
+[x] Skill Icon - Power Up (assets/icons/skill-power.png)
+[x] Skill Icon - Multi Ball (assets/icons/skill-multi.png)
+[x] Skill Icon - Speed Up (assets/icons/skill-speed.png)
+[/] Step 3: Implement dynamic Web Audio API Synthesis Engine (game/sound-manager.js)
+[ ] Step 4: Redesign UI styling & HTML structure (game/index.html)
+[ ] Implement modern cyber-neon styling and glassmorphism cards
+[ ] Integrate sound mute/unmute toggle in HUD and Lobby
+[ ] Wire UI elements to play hover/click sound effects
+[ ] Step 5: Update Polish module (game/polish.js) to use soundManager
+[ ] Step 6: Integrate audio triggers in game files
+[ ] Launch audio in game/ball.js
+[ ] Bounce & hit audio in game/collision.js
+[ ] Skill triggers in game/skill.js
+[ ] Game over & turn complete in game/loop.js
+[ ] Step 7: Verify all changes locally

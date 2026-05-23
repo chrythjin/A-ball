@@ -121,12 +121,6 @@ export function resetGame() {
       스킬_팝업.style.display = 'none';
     }
 
-    // HUD 텍스트 초기화 (hud.js가 다음 프레임에 다시 그릴 것).
-    const hud = document.getElementById('ui-hud');
-    if (hud) {
-      hud.textContent = '';
-    }
-
     const debug = document.getElementById('debug-list');
     if (debug) {
       debug.textContent = '';

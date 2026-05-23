@@ -2,10 +2,17 @@ import { gameState, 적_체력_리스트 } from './state.js';
 import { getScoreText } from './difficulty.js';
 
 export function updateHUD() {
-  const hudElement = document.getElementById('ui-hud');
-  if (!hudElement) return;
+  const turnEl = document.getElementById('hud-turn');
+  const ballsEl = document.getElementById('hud-balls');
+  const powerEl = document.getElementById('hud-power');
+  const speedEl = document.getElementById('hud-speed');
+  const goldEl = document.getElementById('hud-gold');
 
-  hudElement.innerHTML = `${getScoreText()} | 공: ${gameState.공_개수} | 데미지: ${gameState.공_데미지} | 속도: ${gameState.공_속도} | 상태: ${gameState.게임_상태} | 날아간공: ${gameState.현재_날아간_공}`;
+  if (turnEl) turnEl.textContent = String(gameState.현재_턴).padStart(2, '0');
+  if (ballsEl) ballsEl.textContent = String(gameState.공_개수);
+  if (powerEl) powerEl.textContent = String(gameState.공_데미지);
+  if (speedEl) speedEl.textContent = String(gameState.공_속도);
+  if (goldEl) goldEl.textContent = String(gameState.골드_개수);
 }
 
 export function showDebugList(list) {
