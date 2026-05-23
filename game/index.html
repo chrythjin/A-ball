@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>더 볼 (The Ball)</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #0f0f1a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: sans-serif;
+            color: white;
+        }
+        #game-container {
+            position: relative;
+            width: 480px;
+            height: 640px;
+            background-color: #1a1a2e;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+        }
+        canvas {
+            display: block;
+        }
+        .scene {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .scene.active {
+            display: flex;
+        }
+        h1 {
+            font-size: 48px;
+            margin-bottom: 40px;
+            letter-spacing: 2px;
+        }
+        button {
+            padding: 15px 40px;
+            font-size: 24px;
+            background-color: #4a4e69;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        button:hover {
+            background-color: #9a8c98;
+        }
+        
+        /* In-game specific UI */
+        #scene-ingame {
+            justify-content: flex-start;
+            pointer-events: none; /* Let clicks pass through to canvas */
+        }
+        #ui-hud {
+            width: 100%;
+            padding: 15px;
+            box-sizing: border-box;
+            display: flex;
+            justify-content: space-between;
+            font-size: 18px;
+            font-weight: bold;
+            pointer-events: auto;
+        }
+        #skill-popup {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(26, 26, 46, 0.95);
+            padding: 30px;
+            border-radius: 12px;
+            border: 2px solid #4a4e69;
+            text-align: center;
+            pointer-events: auto;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            z-index: 10;
+        }
+        #skill-popup h2 {
+            margin-top: 0;
+            margin-bottom: 20px;
+            color: #f2e9e4;
+        }
+        #skill-popup button {
+            display: block;
+            width: 100%;
+            margin: 10px 0;
+            padding: 12px 20px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+
+<div id="game-container">
+    <canvas id="gameCanvas" width="480" height="640"></canvas>
+
+    <!-- Scene 1: Lobby -->
+    <div id="scene-lobby" class="scene active">
+        <h1 id="game-title">더 볼 (The Ball)</h1>
+        <button id="start-btn" type="button">시작</button>
+    </div>
+
+    <!-- Scene 2: In-game -->
+    <div id="scene-ingame" class="scene">
+        <div id="ui-hud">
+            <span>턴: 1</span>
+            <span>공: 1</span>
+            <span>공격력: 1</span>
+            <span>속도: 1</span>
+        </div>
+        <div id="debug-list"></div>
+        
+        <div id="skill-popup">
+            <h2>스킬 선택</h2>
+            <button id="skill-btn-1" type="button" onclick="window.applySkill(1)">파워 업 (데미지+1)</button>
+            <button id="skill-btn-2" type="button" onclick="window.applySkill(2)">멀티볼 (공+2)</button>
+            <button id="skill-btn-3" type="button" onclick="window.applySkill(3)">스피드 업 (속도+3)</button>
+        </div>
+
+    </div>
+
+    <!-- Scene 3: Game Over -->
+    <div id="scene-gameover" class="scene">
+        <h1>게임 오버</h1>
+        <button type="button" onclick="window.restartGame()">다시 시작</button>
+    </div>
+</div>
+
+<script>
+    // Run BEFORE the type="module" script below. ES module imports fail
+    // outright under file:// (CORS), so a check inside the module never
+    // executes. Swap in an actionable message and bail.
+    if (location.protocol === 'file:') {
+        document.addEventListener('DOMContentLoaded', () => {
+            const lobby = document.getElementById('scene-lobby');
+            if (lobby) {
+                lobby.innerHTML =
+                    '<h1>로컬 서버가 필요합니다</h1>' +
+                    '<p style="max-width:380px;text-align:center;line-height:1.5;">' +
+                    'ES 모듈은 file:// 로는 로드되지 않습니다.<br>' +
+                    '터미널에서 프로젝트 루트(<code>A-ball/</code>)에서<br>' +
+                    '<code style="background:#0f0f1a;padding:4px 8px;border-radius:4px;">python3 -m http.server 8765</code><br>' +
+                    '를 실행한 뒤 <code>http://localhost:8765/game/index.html</code> 을 여세요.' +
+                    '</p>';
+            }
+        });
+    }
+</script>
+<script type="module">
+    import { initLauncher } from './launcher.js';
+    import { startLoop } from './loop.js';
+    import { fullReset } from './reset.js';
+    import { applySkill } from './skill.js';
+
+    // Track current scene
+    window.GAME_SCENES = {
+        current: 'scene-lobby'
+    };
+
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    let launcherInited = false;
+
+    function changeScene(sceneId) {
+        // Hide all scenes
+        document.querySelectorAll('.scene').forEach(el => {
+            el.classList.remove('active');
+        });
+        
+        // Show target scene
+        document.getElementById(sceneId).classList.add('active');
+        window.GAME_SCENES.current = sceneId;
+
+        if (sceneId === 'scene-ingame') {
+            startLoop(canvas, ctx);
+            if (!launcherInited) {
+                initLauncher(canvas, ctx);
+                launcherInited = true;
+            }
+        }
+
+        // Draw canvas based on scene
+        drawScene();
+    }
+
+    function startGame() {
+        changeScene('scene-ingame');
+    }
+
+    function restartGame() {
+        fullReset(canvas, ctx);
+        changeScene('scene-ingame');
+    }
+
+    window.changeScene = changeScene;
+    window.startGame = startGame;
+    window.applySkill = applySkill;
+    window.restartGame = restartGame;
+
+    // Wire buttons via addEventListener instead of relying on inline onclick
+    // resolving against window globals — keeps everything inside the module
+    // and works regardless of when globals get assigned.
+    document.getElementById('start-btn')?.addEventListener('click', startGame);
+
+    function drawScene() {
+        // Clear canvas
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        if (window.GAME_SCENES.current !== 'scene-ingame') return;
+    }
+
+    // Initial draw
+    drawScene();
+</script>
+
+</body>
+</html>
