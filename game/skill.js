@@ -1,12 +1,17 @@
 import { gameState } from './state.js';
 import { soundManager } from './sound-manager.js';
+import { enemies } from './enemy.js';
 
 export const SKILL_REGISTRY = [
   { id: 1, name: '파워 업', desc: '공의 타격 데미지 +1 증가', icon: '../assets/icons/skill-power.png', active: true, sound: 'skill-power', action: () => { gameState.공_데미지 += 1; } },
   { id: 2, name: '멀티볼', desc: '최대 공 개수 +1 증가', icon: '../assets/icons/skill-multi.png', active: true, sound: 'skill-multi', action: () => { gameState.공_개수 += 1; } },
   { id: 3, name: '스피드 업', desc: '공의 발사/비행 속도 +3 증가', icon: '../assets/icons/skill-speed.png', active: true, sound: 'skill-speed', action: () => { gameState.공_속도 += 3; } },
-  { id: 4, name: '실드 가드', desc: '체력 위험 시 1회 보호 (대기 중)', icon: '../assets/icons/skill-power.png', active: false, locked: true },
-  { id: 5, name: '미사일 지원', desc: '매 턴 무작위 블록 타격 (대기 중)', icon: '../assets/icons/skill-multi.png', active: false, locked: true }
+  { id: 4, name: '가드 월', desc: '하단에 1회용 공 반사 가드장막 소환', icon: '../assets/icons/skill-power.png', active: true, sound: 'skill-power', action: () => { gameState.가드_월_보유 = true; } },
+  { id: 5, name: '십자 레이저', desc: '격파 시 가로/세로 라인 블록에 -1 피해', icon: '../assets/icons/skill-multi.png', active: true, sound: 'skill-multi', action: () => { gameState.십자_레이저_보유 = true; } },
+  { id: 6, name: '블래스트 밤', desc: '격파 시 주변 100px 블록에 광역 -1 피해', icon: '../assets/icons/skill-speed.png', active: true, sound: 'skill-speed', action: () => { gameState.블래스트_밤_보유 = true; } },
+  { id: 7, name: '푸시백', desc: '즉시 모든 적을 한 줄 위로 밀어올림', icon: '../assets/icons/skill-power.png', active: true, sound: 'skill-speed', action: () => { for (const e of enemies) { e.y -= 60; } } },
+  { id: 8, name: '약화 광선', desc: '즉시 모든 적의 체력 -1 (1체력은 즉사)', icon: '../assets/icons/skill-multi.png', active: true, sound: 'skill-multi', action: () => { for (const e of enemies) { if (!e.isIndestructible) e.hp -= 1; } } },
+  { id: 9, name: '골드 보너스', desc: '즉시 골드 +20 획득', icon: '../assets/icons/skill-speed.png', active: true, sound: 'skill-power', action: () => { gameState.골드_개수 += 20; localStorage.setItem('game_gold', String(gameState.골드_개수)); if (typeof window.updateGoldDisplay === 'function') window.updateGoldDisplay(); } }
 ];
 
 export function checkSkillTrigger() {

@@ -38,8 +38,44 @@ export function spawnEnemyRow(turn) {
     spawned.push(enemy);
   }
 
+  if (gameState.현재_스테이지 >= 3) {
+    const hasIndestructible = enemies.some(e => e.isIndestructible);
+    if (!hasIndestructible) {
+      const x = X_MIN + Math.random() * (X_MAX - X_MIN);
+      const indestructibleBlock = { id: _nextId++, x, y: SPAWN_Y, hp: Infinity, maxHp: Infinity, isIndestructible: true };
+      enemies.push(indestructibleBlock);
+      spawned.push(indestructibleBlock);
+    }
+  }
+
   console.log(`[enemy] spawnEnemyRow(turn=${turn}): +${count}마리 (hp=${maxHp})`);
   return spawned;
+}
+
+export function moveIndestructibleBlockRandomly() {
+  const block = enemies.find(e => e.isIndestructible);
+  if (!block) return;
+
+  const activeRows = Array.from(new Set(enemies.map(e => e.y)));
+  if (activeRows.length === 0) activeRows.push(SPAWN_Y);
+
+  const targetY = activeRows[Math.floor(Math.random() * activeRows.length)];
+
+  let targetX = X_MIN + Math.random() * (X_MAX - X_MIN);
+  for (let attempt = 0; attempt < 10; attempt++) {
+    const tempX = X_MIN + Math.random() * (X_MAX - X_MIN);
+    const overlaps = enemies.some(e => {
+      if (e.id === block.id) return false;
+      return Math.abs(e.x - tempX) < ENEMY_WIDTH && Math.abs(e.y - targetY) < ENEMY_HEIGHT;
+    });
+    if (!overlaps) {
+      targetX = tempX;
+      break;
+    }
+  }
+
+  block.x = targetX;
+  block.y = targetY;
 }
 
 /** Move every enemy one row (60px) downward. */
@@ -83,6 +119,61 @@ export function drawEnemies(ctx) {
   ctx.textBaseline = 'middle';
 
   for (const enemy of enemies) {
+    if (enemy.isIndestructible) {
+      const neonColor = '#00ffff';
+      const topColor = '#778899';
+      const bottomColor = '#2f313d';
+
+      const grad = ctx.createLinearGradient(enemy.x, enemy.y, enemy.x, enemy.y + ENEMY_HEIGHT);
+      grad.addColorStop(0, topColor);
+      grad.addColorStop(1, bottomColor);
+
+      ctx.save();
+      ctx.shadowBlur = 10;
+      ctx.shadowColor = neonColor;
+      ctx.fillStyle = grad;
+      drawRoundedRect(ctx, enemy.x, enemy.y, ENEMY_WIDTH, ENEMY_HEIGHT, 6);
+      ctx.fill();
+      ctx.restore();
+
+      ctx.save();
+      ctx.strokeStyle = neonColor;
+      ctx.lineWidth = 2;
+      drawRoundedRect(ctx, enemy.x, enemy.y, ENEMY_WIDTH, ENEMY_HEIGHT, 6);
+      ctx.stroke();
+      ctx.restore();
+
+      ctx.save();
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = '#ffea00';
+      ctx.beginPath();
+      ctx.moveTo(enemy.x + 8, enemy.y + 5); ctx.lineTo(enemy.x + 18, enemy.y + 25);
+      ctx.moveTo(enemy.x + 22, enemy.y + 5); ctx.lineTo(enemy.x + 32, enemy.y + 25);
+      ctx.moveTo(enemy.x + 38, enemy.y + 5); ctx.lineTo(enemy.x + 48, enemy.y + 25);
+      ctx.stroke();
+      ctx.restore();
+
+      ctx.save();
+      ctx.beginPath();
+      ctx.moveTo(enemy.x + 30, enemy.y + 8);
+      ctx.lineTo(enemy.x + 42, enemy.y + 11);
+      ctx.lineTo(enemy.x + 38, enemy.y + 21);
+      ctx.quadraticCurveTo(enemy.x + 30, enemy.y + 26, enemy.x + 30, enemy.y + 26);
+      ctx.quadraticCurveTo(enemy.x + 22, enemy.y + 21, enemy.x + 22, enemy.y + 21);
+      ctx.lineTo(enemy.x + 18, enemy.y + 11);
+      ctx.closePath();
+      ctx.fillStyle = 'rgba(0, 255, 255, 0.45)';
+      ctx.shadowBlur = 6;
+      ctx.shadowColor = '#00ffff';
+      ctx.fill();
+      ctx.strokeStyle = '#00ffff';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+      ctx.restore();
+
+      continue;
+    }
+
     let neonColor = '#ff0055';
     let topColor = '#ff003c';
     let bottomColor = '#4a0011';
@@ -104,6 +195,12 @@ export function drawEnemies(ctx) {
     const grad = ctx.createLinearGradient(enemy.x, enemy.y, enemy.x, enemy.y + ENEMY_HEIGHT);
     grad.addColorStop(0, topColor);
     grad.addColorStop(1, bottomColor);
+
+    ctx.save();
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.45)';
+    drawRoundedRect(ctx, enemy.x, enemy.y + 3, ENEMY_WIDTH, ENEMY_HEIGHT, 6);
+    ctx.fill();
+    ctx.restore();
 
     ctx.save();
     ctx.shadowBlur = 8;

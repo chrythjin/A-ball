@@ -281,6 +281,10 @@
                 <span class="hud-label">ROUND</span>
                 <span class="hud-value" id="hud-turn">01</span>
             </div>
+            <div class="hud-item" style="min-width: 80px;">
+                <span class="hud-label">SCORE</span>
+                <span class="hud-value" id="hud-score" style="color: #00ffff; text-shadow: 0 0 8px rgba(0, 255, 255, 0.6);">0</span>
+            </div>
             <div class="hud-item">
                 <span class="hud-label">BALLS</span>
                 <span class="hud-value" id="hud-balls">1</span>
@@ -411,7 +415,7 @@
             updateStageBackground(1);
             soundManager.playBGM('lobby');
         } else if (sceneId === 'scene-gameover') {
-            const finalScore = gameState.현재_턴;
+            const finalScore = gameState.점수;
             const scoreEl = document.getElementById('gameover-score');
             if (scoreEl) scoreEl.textContent = String(finalScore);
             document.getElementById('leaderboard-input-section').style.display = 'flex';
@@ -440,6 +444,10 @@
                 <div class="hud-item">
                     <span class="hud-label">ROUND</span>
                     <span class="hud-value" id="hud-turn">01</span>
+                </div>
+                <div class="hud-item" style="min-width: 80px;">
+                    <span class="hud-label">SCORE</span>
+                    <span class="hud-value" id="hud-score" style="color: #00ffff; text-shadow: 0 0 8px rgba(0, 255, 255, 0.6);">0</span>
                 </div>
                 <div class="hud-item">
                     <span class="hud-label">BALLS</span>
@@ -819,12 +827,11 @@
         const leaderboard = getLeaderboard();
         leaderboard.push({
             name: name.trim().toUpperCase(),
-            score: gameState.현재_턴,
+            score: gameState.점수,
             stage: gameState.현재_스테이지,
             date: new Date().toLocaleDateString()
         });
         leaderboard.sort((a, b) => b.score - a.score);
-        localStorage.setItem('game_leaderboard', JSON.stringify(leaderboard.slice(0, 10)));
     }
 
     function showLeaderboard() {
@@ -846,7 +853,7 @@
                             <span class="${rankClass}">#${index + 1}</span>
                             <span style="margin-left: 10px; font-weight: bold; color: #fff;">${item.name}</span>
                         </div>
-                        <div style="color: #00ffff;">ROUND ${item.score} <span style="font-size:10px; color:#8080a0;">(STG ${item.stage})</span></div>
+                        <div style="color: #00ffff;">${item.score} PTS <span style="font-size:10px; color:#8080a0;">(STG ${item.stage})</span></div>
                     </div>
                 `;
             });

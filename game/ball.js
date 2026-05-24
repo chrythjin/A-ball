@@ -56,6 +56,11 @@ export function launchBalls(angle) {
     });
   }
 
+  if (gameState.가드_월_보유) {
+    gameState.가드_월_활성화 = true;
+    gameState.가드_월_보유 = false;
+  }
+
   gameState.현재_날아간_공 += count;
   setGameState(1);
   playLaunchSound();
@@ -110,7 +115,15 @@ export function stepBalls() {
       soundManager.playSFX('ball-wall');
     }
 
-    const reachedBottom = ball.y >= COLLECT_Y;
+    let reachedBottom = ball.y >= COLLECT_Y;
+
+    if (reachedBottom && gameState.가드_월_활성화) {
+      ball.y = COLLECT_Y - 4;
+      ball.vy = -Math.abs(ball.vy);
+      reachedBottom = false;
+      soundManager.playSFX('ball-wall');
+    }
+
     const stuck = ball.frames >= TRAP_GUARD_FRAMES;
 
     if (reachedBottom || stuck) {
@@ -126,6 +139,7 @@ export function stepBalls() {
   // 턴 종료: splice로 in-place clear (재할당 금지). 입력 재허용을 위해 setGameState(0).
   if (gameState.현재_날아간_공 === 0 && balls.length > 0) {
     balls.splice(0, balls.length);
+    gameState.가드_월_활성화 = false;
     setGameState(0);
     soundManager.playSFX('ball-all-collected');
     console.log('[ball] all balls collected — 게임_상태=0');

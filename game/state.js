@@ -25,6 +25,12 @@ export const gameState = {
   보유한_볼_리스트: JSON.parse(localStorage.getItem('game_owned_balls') || '["basic"]'),
   장착된_캐릭터: localStorage.getItem('game_equipped_character') || 'frog',
   보유한_캐릭터_리스트: JSON.parse(localStorage.getItem('game_owned_characters') || '["frog"]'),
+  점수: 0,
+  콤보_누적_개수: 0,
+  가드_월_보유: false,
+  가드_월_활성화: false,
+  십자_레이저_보유: false,
+  블래스트_밤_보유: false,
 };
 
 export const 적_체력_리스트 = [];
@@ -43,5 +49,11 @@ export function resetState() {
   gameState.isMouseActive = false;
   gameState.현재_스테이지 = 1;
   gameState.bgm_트랙_선택 = 'auto';
+  gameState.점수 = 0;
+  gameState.콤보_누적_개수 = 0;
+  gameState.가드_월_보유 = false;
+  gameState.가드_월_활성화 = false;
+  gameState.십자_레이저_보유 = false;
+  gameState.블래스트_밤_보유 = false;
   적_체력_리스트.splice(0, 적_체력_리스트.length);
 }

@@ -6,6 +6,7 @@ import {
   descendEnemies,
   drawEnemies,
   spawnEnemyRow,
+  moveIndestructibleBlockRandomly,
 } from './enemy.js';
 import { checkCollisions, syncHpList } from './collision.js';
 import { updateHUD } from './hud.js';
@@ -16,9 +17,6 @@ import { soundManager } from './sound-manager.js';
 
 const CANVAS_WIDTH = 480;
 const CANVAS_HEIGHT = 800;
-const DEADLINE_Y = 760;
-const DEADLINE_HEIGHT = 5;
-const DEADLINE_COLOR = '#ff4d4d';
 
 let animationFrameId = null;
 let hasSeededFirstRow = false;
@@ -520,6 +518,13 @@ function onTurnEnd() {
   descendEnemies();
   soundManager.playSFX('enemy-descend');
 
+  gameState.콤보_누적_개수 = 0;
+  gameState.가드_월_활성화 = false;
+
+  if (gameState.현재_스테이지 >= 3) {
+    moveIndestructibleBlockRandomly();
+  }
+
   if (checkGameOver()) {
     screenShake(document.getElementById('gameCanvas'));
     setGameState(2);
@@ -553,6 +558,20 @@ function onTurnEnd() {
 function runFrame(ctx) {
   ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
   drawProceduralBackground(ctx);
+
+  if (gameState.가드_월_활성화) {
+    ctx.save();
+    ctx.strokeStyle = '#00ffff';
+    ctx.lineWidth = 4;
+    ctx.shadowBlur = 12;
+    ctx.shadowColor = '#00ffff';
+    ctx.beginPath();
+    ctx.moveTo(0, 740);
+    ctx.lineTo(CANVAS_WIDTH, 740);
+    ctx.stroke();
+    ctx.restore();
+  }
+
   drawEnemies(ctx);
   drawBalls(ctx);
   drawLauncherAndAim(ctx);
