@@ -21,7 +21,6 @@ const CANVAS_RIGHT = 480;
 const CANVAS_TOP = 0;
 const COLLECT_Y = 740;
 const BALL_RADIUS = 8;
-const BALL_COLOR = '#f2e9e4';
 // 트랩 가드: 한 공이 이 프레임 수를 넘게 살아있으면 강제 회수 (Metis 안전망)
 const TRAP_GUARD_FRAMES = 500;
 
@@ -223,7 +222,13 @@ function drawMissile(ctx, x, y, vx, vy) {
   ctx.translate(x, y);
   ctx.rotate(angle + Math.PI / 2);
 
-  ctx.fillStyle = '#ff3333';
+  const grad = ctx.createLinearGradient(-5, 0, 5, 0);
+  grad.addColorStop(0, '#990000');
+  grad.addColorStop(0.3, '#ff3333');
+  grad.addColorStop(0.7, '#ff8080');
+  grad.addColorStop(1, '#550000');
+  ctx.fillStyle = grad;
+
   ctx.beginPath();
   ctx.moveTo(0, -10);
   ctx.quadraticCurveTo(5, -4, 5, 4);
@@ -231,12 +236,16 @@ function drawMissile(ctx, x, y, vx, vy) {
   ctx.quadraticCurveTo(-5, -4, 0, -10);
   ctx.fill();
 
-  ctx.fillStyle = '#ffff00';
+  const windowGrad = ctx.createRadialGradient(-1, -3, 0.5, 0, -2, 2.5);
+  windowGrad.addColorStop(0, '#ffffff');
+  windowGrad.addColorStop(0.5, '#00ffff');
+  windowGrad.addColorStop(1, '#004455');
+  ctx.fillStyle = windowGrad;
   ctx.beginPath();
   ctx.arc(0, -2, 2.5, 0, Math.PI * 2);
   ctx.fill();
 
-  ctx.fillStyle = '#4a4e69';
+  ctx.fillStyle = '#1e202c';
   ctx.beginPath();
   ctx.moveTo(-5, 2);
   ctx.lineTo(-9, 6);
@@ -300,9 +309,10 @@ export function drawBalls(ctx) {
       }
 
       ctx.save();
-      const grad = ctx.createRadialGradient(ball.x, ball.y, 0, ball.x, ball.y, BALL_RADIUS);
+      const grad = ctx.createRadialGradient(ball.x - 2, ball.y - 2, 1, ball.x, ball.y, BALL_RADIUS);
       grad.addColorStop(0, '#ffffff');
-      grad.addColorStop(1, '#00ffff');
+      grad.addColorStop(0.3, '#00ffff');
+      grad.addColorStop(1, '#004455');
       ctx.fillStyle = grad;
       ctx.shadowBlur = 8;
       ctx.shadowColor = '#00ffff';
@@ -316,7 +326,11 @@ export function drawBalls(ctx) {
 
     } else if (skin === 'star') {
       ctx.save();
-      ctx.fillStyle = '#ffcc00';
+      const starGrad = ctx.createRadialGradient(ball.x - 3, ball.y - 3, 1, ball.x, ball.y, BALL_RADIUS + 3);
+      starGrad.addColorStop(0, '#ffffff');
+      starGrad.addColorStop(0.3, '#ffcc00');
+      starGrad.addColorStop(1, '#805500');
+      ctx.fillStyle = starGrad;
       ctx.shadowBlur = 10;
       ctx.shadowColor = '#ffea00';
       drawStar(ctx, ball.x, ball.y, 5, BALL_RADIUS + 3, BALL_RADIUS - 3, ball.spinAngle || 0);
@@ -324,9 +338,10 @@ export function drawBalls(ctx) {
 
     } else {
       ctx.save();
-      const grad = ctx.createRadialGradient(ball.x, ball.y, 0, ball.x, ball.y, BALL_RADIUS);
+      const grad = ctx.createRadialGradient(ball.x - 2, ball.y - 2, 1, ball.x, ball.y, BALL_RADIUS);
       grad.addColorStop(0, '#ffffff');
-      grad.addColorStop(1, '#a6a6a6');
+      grad.addColorStop(0.4, '#d0d0e0');
+      grad.addColorStop(1, '#3a3a45');
       ctx.fillStyle = grad;
       ctx.shadowBlur = 6;
       ctx.shadowColor = '#ffffff';

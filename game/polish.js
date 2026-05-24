@@ -15,7 +15,7 @@ export function playKillSound() {
   soundManager.playSFX('enemy-kill');
 }
 
-export function flashEnemy(ctx, enemy) {
+export function flashEnemy(_ctx, enemy) {
   flashes.push({ x: enemy.x, y: enemy.y, frames: 3 });
 }
 
@@ -203,8 +203,18 @@ export function updateEffects(ctx) {
     if (p.type === 'shard') {
       ctx.translate(p.x, p.y);
       ctx.rotate(p.angle);
+
+      ctx.fillStyle = p.color;
       ctx.beginPath();
       ctx.moveTo(-p.size, -p.size);
+      ctx.lineTo(0, -p.size * 1.3);
+      ctx.lineTo(0, p.size);
+      ctx.closePath();
+      ctx.fill();
+
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.35)';
+      ctx.beginPath();
+      ctx.moveTo(0, -p.size * 1.3);
       ctx.lineTo(p.size, -p.size);
       ctx.lineTo(0, p.size);
       ctx.closePath();

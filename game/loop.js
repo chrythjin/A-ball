@@ -295,31 +295,67 @@ function drawFrogLauncher(ctx) {
     ctx.restore();
     
   } else {
-    cy += recoilOffset;
-    
-    ctx.fillStyle = '#4d3d2c';
+    const bobbing = Math.sin(Date.now() / 240) * 2.5;
+    cy += recoilOffset + bobbing;
+
+    const bootsGrad = ctx.createLinearGradient(cx - 14, cy + 30, cx + 14, cy + 30);
+    bootsGrad.addColorStop(0, '#221a12');
+    bootsGrad.addColorStop(0.5, '#4d3d2c');
+    bootsGrad.addColorStop(1, '#110b06');
+    ctx.fillStyle = bootsGrad;
     ctx.fillRect(cx - 14, cy + 30, 8, 8);
     ctx.fillRect(cx + 6, cy + 30, 8, 8);
-    
-    ctx.fillStyle = '#3b5c38';
+
+    const pantsGrad = ctx.createLinearGradient(cx - 13, cy + 18, cx + 13, cy + 18);
+    pantsGrad.addColorStop(0, '#1c301a');
+    pantsGrad.addColorStop(0.4, '#507c4b');
+    pantsGrad.addColorStop(0.5, '#3b5c38');
+    pantsGrad.addColorStop(1, '#152413');
+    ctx.fillStyle = pantsGrad;
     ctx.fillRect(cx - 13, cy + 18, 10, 14);
     ctx.fillRect(cx + 3, cy + 18, 10, 14);
 
-    ctx.fillStyle = '#8dc63f';
+    const torsoGrad = ctx.createLinearGradient(cx - 15, cy - 2, cx + 15, cy - 2);
+    torsoGrad.addColorStop(0, '#5a8224');
+    torsoGrad.addColorStop(0.3, '#bfff80');
+    torsoGrad.addColorStop(0.5, '#8dc63f');
+    torsoGrad.addColorStop(1, '#3b5417');
+    ctx.fillStyle = torsoGrad;
     ctx.fillRect(cx - 15, cy - 2, 30, 22);
-    ctx.fillStyle = '#222';
+
+    ctx.fillStyle = '#111117';
     ctx.fillRect(cx - 15, cy + 14, 30, 4);
 
-    ctx.fillStyle = '#8dc63f';
+    const headGrad = ctx.createRadialGradient(cx - 5, cy - 15, 1, cx, cy - 10, 16);
+    headGrad.addColorStop(0, '#bfff80');
+    headGrad.addColorStop(0.5, '#8dc63f');
+    headGrad.addColorStop(1, '#4a731d');
+    ctx.fillStyle = headGrad;
     ctx.beginPath();
     ctx.arc(cx, cy - 10, 16, 0, Math.PI * 2);
     ctx.fill();
 
-    ctx.fillStyle = '#ffffff';
+    const eyeLGrad = ctx.createRadialGradient(cx - 9, cy - 12, 1, cx - 8, cy - 11, 5.5);
+    eyeLGrad.addColorStop(0, '#ffffff');
+    eyeLGrad.addColorStop(0.6, '#f2f2f7');
+    eyeLGrad.addColorStop(1, '#cccccc');
+    
+    const eyeRGrad = ctx.createRadialGradient(cx + 7, cy - 12, 1, cx + 8, cy - 11, 5.5);
+    eyeRGrad.addColorStop(0, '#ffffff');
+    eyeRGrad.addColorStop(0.6, '#f2f2f7');
+    eyeRGrad.addColorStop(1, '#cccccc');
+
+    ctx.save();
+    ctx.fillStyle = eyeLGrad;
     ctx.beginPath();
     ctx.arc(cx - 8, cy - 11, 5.5, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = eyeRGrad;
+    ctx.beginPath();
     ctx.arc(cx + 8, cy - 11, 5.5, 0, Math.PI * 2);
     ctx.fill();
+    ctx.restore();
 
     ctx.fillStyle = '#231f20';
     ctx.beginPath();
@@ -327,14 +363,24 @@ function drawFrogLauncher(ctx) {
     ctx.arc(cx + 8, cy - 11, 2, 0, Math.PI * 2);
     ctx.fill();
 
-    ctx.fillStyle = '#d7df23';
+    const helmetGrad = ctx.createRadialGradient(cx - 4, cy - 22, 2, cx, cy - 13, 16);
+    helmetGrad.addColorStop(0, '#ffffcc');
+    helmetGrad.addColorStop(0.4, '#d7df23');
+    helmetGrad.addColorStop(1, '#828710');
+    ctx.fillStyle = helmetGrad;
     ctx.beginPath();
     ctx.arc(cx, cy - 13, 16, Math.PI, 0);
     ctx.fill();
-    ctx.fillStyle = '#ffffff';
+
+    const starBadgeGrad = ctx.createRadialGradient(cx - 1, cy - 23, 0.5, cx, cy - 22, 4);
+    starBadgeGrad.addColorStop(0, '#ffffff');
+    starBadgeGrad.addColorStop(0.7, '#ffffff');
+    starBadgeGrad.addColorStop(1, '#e0e0e5');
+    ctx.fillStyle = starBadgeGrad;
     ctx.beginPath();
     ctx.arc(cx, cy - 22, 4, 0, Math.PI * 2);
     ctx.fill();
+
     ctx.fillStyle = '#ff003c';
     ctx.font = 'bold 8px sans-serif';
     ctx.textAlign = 'center';
@@ -409,25 +455,48 @@ function drawRobotLauncher(ctx) {
     ctx.restore();
 
   } else {
-    cy += recoilOffset;
+    const bobbing = Math.sin(Date.now() / 240) * 2.5;
+    cy += recoilOffset + bobbing;
 
-    ctx.fillStyle = '#2f313d';
+    const legsGrad = ctx.createLinearGradient(cx - 14, cy + 18, cx + 14, cy + 18);
+    legsGrad.addColorStop(0, '#1c1e26');
+    legsGrad.addColorStop(0.5, '#2f313d');
+    legsGrad.addColorStop(1, '#111217');
+    ctx.fillStyle = legsGrad;
     ctx.fillRect(cx - 14, cy + 18, 8, 14);
     ctx.fillRect(cx + 6, cy + 18, 8, 14);
 
-    ctx.fillStyle = '#708090';
+    const torsoGrad = ctx.createLinearGradient(cx - 18, cy - 2, cx + 18, cy - 2);
+    torsoGrad.addColorStop(0, '#3a4450');
+    torsoGrad.addColorStop(0.3, '#d0d8e0');
+    torsoGrad.addColorStop(0.5, '#708090');
+    torsoGrad.addColorStop(1, '#252a32');
+    ctx.fillStyle = torsoGrad;
     ctx.fillRect(cx - 18, cy - 2, 36, 20);
-    ctx.fillStyle = '#00ffff';
+
+    const coreGrad = ctx.createRadialGradient(cx, cy + 8, 0.5, cx, cy + 8, 4);
+    coreGrad.addColorStop(0, '#ffffff');
+    coreGrad.addColorStop(0.4, '#00ffff');
+    coreGrad.addColorStop(1, '#004455');
+    ctx.fillStyle = coreGrad;
     ctx.beginPath();
     ctx.arc(cx, cy + 8, 4, 0, Math.PI * 2);
     ctx.fill();
 
-    ctx.fillStyle = '#708090';
+    const headGrad = ctx.createRadialGradient(cx - 3, cy - 16, 1, cx, cy - 12, 12);
+    headGrad.addColorStop(0, '#ffffff');
+    headGrad.addColorStop(0.4, '#a0b0c0');
+    headGrad.addColorStop(1, '#3a4450');
+    ctx.fillStyle = headGrad;
     ctx.beginPath();
     ctx.arc(cx, cy - 12, 12, 0, Math.PI * 2);
     ctx.fill();
 
-    ctx.fillStyle = '#00ffff';
+    const visorGrad = ctx.createLinearGradient(cx - 8, cy - 15, cx + 8, cy - 15);
+    visorGrad.addColorStop(0, '#004455');
+    visorGrad.addColorStop(0.5, '#00ffff');
+    visorGrad.addColorStop(1, '#004455');
+    ctx.fillStyle = visorGrad;
     ctx.shadowBlur = 6;
     ctx.shadowColor = '#00ffff';
     ctx.fillRect(cx - 8, cy - 15, 16, 3);
@@ -441,8 +510,13 @@ function drawRobotLauncher(ctx) {
     ctx.translate(cx - 16, cy - 12);
     ctx.rotate(angle + Math.PI / 2);
 
-    ctx.fillStyle = '#111217';
+    const cannonGrad = ctx.createLinearGradient(-4, 0, 4, 0);
+    cannonGrad.addColorStop(0, '#111217');
+    cannonGrad.addColorStop(0.5, '#444c5a');
+    cannonGrad.addColorStop(1, '#0a0a0d');
+    ctx.fillStyle = cannonGrad;
     ctx.fillRect(-4, -20, 8, 25);
+    
     ctx.fillStyle = '#ff003c';
     ctx.fillRect(-2, -14, 4, 3);
 
@@ -561,13 +635,25 @@ function runFrame(ctx) {
 
   if (gameState.가드_월_활성화) {
     ctx.save();
-    ctx.strokeStyle = '#00ffff';
-    ctx.lineWidth = 4;
-    ctx.shadowBlur = 12;
+    ctx.shadowBlur = 20;
     ctx.shadowColor = '#00ffff';
+    ctx.strokeStyle = 'rgba(0, 255, 255, 0.4)';
+    ctx.lineWidth = 10;
     ctx.beginPath();
     ctx.moveTo(0, 740);
     ctx.lineTo(CANVAS_WIDTH, 740);
+    ctx.stroke();
+
+    ctx.strokeStyle = '#00ffff';
+    ctx.lineWidth = 5;
+    ctx.shadowBlur = 0;
+    ctx.stroke();
+
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(0, 738.5);
+    ctx.lineTo(CANVAS_WIDTH, 738.5);
     ctx.stroke();
     ctx.restore();
   }
