@@ -298,39 +298,44 @@
 
     <!-- Scene 2: In-game -->
     <div id="scene-ingame" class="scene">
-        <div id="ui-hud">
-            <div class="hud-item">
-                <span class="hud-label">ROUND</span>
-                <span class="hud-value" id="hud-turn">01</span>
-            </div>
-            <div class="hud-item" style="min-width: 80px;">
-                <span class="hud-label">SCORE</span>
-                <span class="hud-value" id="hud-score" style="color: #00ffff; text-shadow: 0 0 8px rgba(0, 255, 255, 0.6);">0</span>
-            </div>
-            <div class="hud-item">
-                <span class="hud-label">BALLS</span>
-                <span class="hud-value" id="hud-balls">1</span>
-            </div>
-            <div class="hud-item">
-                <span class="hud-label">POW</span>
-                <span class="hud-value" id="hud-power">1</span>
-            </div>
-            <div class="hud-item">
-                <span class="hud-label">SPD</span>
-                <span class="hud-value" id="hud-speed">1</span>
-            </div>
-            <div class="hud-item">
-                <span class="hud-label">GOLD</span>
-                <span class="hud-value" id="hud-gold" style="color: #ffd700; text-shadow: 0 0 8px rgba(255, 215, 0, 0.6);">0</span>
-            </div>
-            
-            <div style="display: flex; align-items: center; gap: 8px;">
-                <button id="hud-shop-btn" type="button" style="padding: 4px 8px; font-size: 10px; background: rgba(15, 15, 30, 0.5); border: 1px solid rgba(0, 255, 255, 0.2); border-radius: 6px; cursor: pointer; color: white; box-shadow: none; font-weight: bold; text-transform: none; letter-spacing: 0;">🛒 SHOP</button>
-                <div style="display: flex; align-items: center; gap: 4px; background: rgba(15,15,30,0.5); border: 1px solid rgba(0,255,255,0.15); padding: 2px 6px; border-radius: 6px;">
-                    <span style="font-size: 9px; color: #00ffff; font-family: monospace;">VOL</span>
-                    <input id="hud-volume-slider" type="range" min="0" max="1" step="0.05" style="width: 50px; accent-color: #00ffff; background: rgba(255,255,255,0.1); height: 3px; border-radius: 1px; cursor: pointer; outline: none;">
+        <div id="ui-hud" style="flex-direction: column; gap: 8px; padding: 12px 16px; border-radius: 0 0 20px 20px;">
+            <div style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
+                <div class="hud-item">
+                    <span class="hud-label">ROUND</span>
+                    <span class="hud-value" id="hud-turn">01</span>
                 </div>
-                <button id="hud-sound-toggle" type="button" style="padding: 4px 10px; font-size: 11px; background: rgba(15, 15, 30, 0.5); border: 1px solid rgba(0, 255, 255, 0.2); border-radius: 6px; cursor: pointer; color: white; letter-spacing: 0.5px; text-transform: none; box-shadow: none;">🔊 ON</button>
+                <div class="hud-item" style="min-width: 80px;">
+                    <span class="hud-label">SCORE</span>
+                    <span class="hud-value" id="hud-score" style="color: #00ffff; text-shadow: 0 0 8px rgba(0, 255, 255, 0.6);">0</span>
+                </div>
+                <div class="hud-item">
+                    <span class="hud-label">BALLS</span>
+                    <span class="hud-value" id="hud-balls">1</span>
+                </div>
+                <div class="hud-item">
+                    <span class="hud-label">GOLD</span>
+                    <span class="hud-value" id="hud-gold" style="color: #ffd700; text-shadow: 0 0 8px rgba(255, 215, 0, 0.6);">0</span>
+                </div>
+            </div>
+            <div style="display: flex; justify-content: space-between; width: 100%; align-items: center; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 6px;">
+                <div style="display: flex; gap: 15px;">
+                    <div class="hud-item" style="flex-direction: row; gap: 4px; align-items: center;">
+                        <span class="hud-label" style="margin-bottom: 0;">POW</span>
+                        <span class="hud-value" id="hud-power" style="font-size: 13px; color: #ff0055;">1</span>
+                    </div>
+                    <div class="hud-item" style="flex-direction: row; gap: 4px; align-items: center;">
+                        <span class="hud-label" style="margin-bottom: 0;">SPD</span>
+                        <span class="hud-value" id="hud-speed" style="font-size: 13px; color: #00ffcc;">1</span>
+                    </div>
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <button id="hud-shop-btn" type="button" style="padding: 4px 8px; font-size: 10px; background: rgba(15, 15, 30, 0.5); border: 1px solid rgba(0, 255, 255, 0.2); border-radius: 6px; cursor: pointer; color: white; box-shadow: none; font-weight: bold; text-transform: none; letter-spacing: 0;">🛒 SHOP</button>
+                    <div style="display: flex; align-items: center; gap: 4px; background: rgba(15,15,30,0.5); border: 1px solid rgba(0,255,255,0.15); padding: 2px 6px; border-radius: 6px;">
+                        <span style="font-size: 9px; color: #00ffff; font-family: monospace;">VOL</span>
+                        <input id="hud-volume-slider" type="range" min="0" max="1" step="0.05" style="width: 50px; accent-color: #00ffff; background: rgba(255,255,255,0.1); height: 3px; border-radius: 1px; cursor: pointer; outline: none;">
+                    </div>
+                    <button id="hud-sound-toggle" type="button" style="padding: 4px 10px; font-size: 11px; background: rgba(15, 15, 30, 0.5); border: 1px solid rgba(0, 255, 255, 0.2); border-radius: 6px; cursor: pointer; color: white; letter-spacing: 0.5px; text-transform: none; box-shadow: none;">🔊 ON</button>
+                </div>
             </div>
         </div>
         <div id="debug-list" style="display: none;"></div>
@@ -463,37 +468,43 @@
         const hud = document.getElementById('ui-hud');
         if (hud) {
             hud.innerHTML = `
-                <div class="hud-item">
-                    <span class="hud-label">ROUND</span>
-                    <span class="hud-value" id="hud-turn">01</span>
-                </div>
-                <div class="hud-item" style="min-width: 80px;">
-                    <span class="hud-label">SCORE</span>
-                    <span class="hud-value" id="hud-score" style="color: #00ffff; text-shadow: 0 0 8px rgba(0, 255, 255, 0.6);">0</span>
-                </div>
-                <div class="hud-item">
-                    <span class="hud-label">BALLS</span>
-                    <span class="hud-value" id="hud-balls">1</span>
-                </div>
-                <div class="hud-item">
-                    <span class="hud-label">POW</span>
-                    <span class="hud-value" id="hud-power">1</span>
-                </div>
-                <div class="hud-item">
-                    <span class="hud-label">SPD</span>
-                    <span class="hud-value" id="hud-speed">1</span>
-                </div>
-                <div class="hud-item">
-                    <span class="hud-label">GOLD</span>
-                    <span class="hud-value" id="hud-gold" style="color: #ffd700; text-shadow: 0 0 8px rgba(255, 215, 0, 0.6);">0</span>
-                </div>
-                <div style="display: flex; align-items: center; gap: 8px;">
-                    <button id="hud-shop-btn" type="button" style="padding: 4px 8px; font-size: 10px; background: rgba(15, 15, 30, 0.5); border: 1px solid rgba(0, 255, 255, 0.2); border-radius: 6px; cursor: pointer; color: white; box-shadow: none; font-weight: bold; text-transform: none; letter-spacing: 0;">🛒 SHOP</button>
-                    <div style="display: flex; align-items: center; gap: 4px; background: rgba(15,15,30,0.5); border: 1px solid rgba(0,255,255,0.15); padding: 2px 6px; border-radius: 6px;">
-                        <span style="font-size: 9px; color: #00ffff; font-family: monospace;">VOL</span>
-                        <input id="hud-volume-slider" type="range" min="0" max="1" step="0.05" style="width: 50px; accent-color: #00ffff; background: rgba(255,255,255,0.1); height: 3px; border-radius: 1px; cursor: pointer; outline: none;">
+                <div style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
+                    <div class="hud-item">
+                        <span class="hud-label">ROUND</span>
+                        <span class="hud-value" id="hud-turn">01</span>
                     </div>
-                    <button id="hud-sound-toggle" type="button" style="padding: 4px 10px; font-size: 11px; background: rgba(15, 15, 30, 0.5); border: 1px solid rgba(0, 255, 255, 0.2); border-radius: 6px; cursor: pointer; color: white; letter-spacing: 0.5px; text-transform: none; box-shadow: none;">🔊 ON</button>
+                    <div class="hud-item" style="min-width: 80px;">
+                        <span class="hud-label">SCORE</span>
+                        <span class="hud-value" id="hud-score" style="color: #00ffff; text-shadow: 0 0 8px rgba(0, 255, 255, 0.6);">0</span>
+                    </div>
+                    <div class="hud-item">
+                        <span class="hud-label">BALLS</span>
+                        <span class="hud-value" id="hud-balls">1</span>
+                    </div>
+                    <div class="hud-item">
+                        <span class="hud-label">GOLD</span>
+                        <span class="hud-value" id="hud-gold" style="color: #ffd700; text-shadow: 0 0 8px rgba(255, 215, 0, 0.6);">0</span>
+                    </div>
+                </div>
+                <div style="display: flex; justify-content: space-between; width: 100%; align-items: center; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 6px;">
+                    <div style="display: flex; gap: 15px;">
+                        <div class="hud-item" style="flex-direction: row; gap: 4px; align-items: center;">
+                            <span class="hud-label" style="margin-bottom: 0;">POW</span>
+                            <span class="hud-value" id="hud-power" style="font-size: 13px; color: #ff0055;">1</span>
+                        </div>
+                        <div class="hud-item" style="flex-direction: row; gap: 4px; align-items: center;">
+                            <span class="hud-label" style="margin-bottom: 0;">SPD</span>
+                            <span class="hud-value" id="hud-speed" style="font-size: 13px; color: #00ffcc;">1</span>
+                        </div>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <button id="hud-shop-btn" type="button" style="padding: 4px 8px; font-size: 10px; background: rgba(15, 15, 30, 0.5); border: 1px solid rgba(0, 255, 255, 0.2); border-radius: 6px; cursor: pointer; color: white; box-shadow: none; font-weight: bold; text-transform: none; letter-spacing: 0;">🛒 SHOP</button>
+                        <div style="display: flex; align-items: center; gap: 4px; background: rgba(15,15,30,0.5); border: 1px solid rgba(0,255,255,0.15); padding: 2px 6px; border-radius: 6px;">
+                            <span style="font-size: 9px; color: #00ffff; font-family: monospace;">VOL</span>
+                            <input id="hud-volume-slider" type="range" min="0" max="1" step="0.05" style="width: 50px; accent-color: #00ffff; background: rgba(255,255,255,0.1); height: 3px; border-radius: 1px; cursor: pointer; outline: none;">
+                        </div>
+                        <button id="hud-sound-toggle" type="button" style="padding: 4px 10px; font-size: 11px; background: rgba(15, 15, 30, 0.5); border: 1px solid rgba(0, 255, 255, 0.2); border-radius: 6px; cursor: pointer; color: white; letter-spacing: 0.5px; text-transform: none; box-shadow: none;">🔊 ON</button>
+                    </div>
                 </div>
             `;
             

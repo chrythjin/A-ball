@@ -175,7 +175,7 @@ export function checkCollisions() {
           soundManager.playSFX('skill-multi');
           for (let j = enemies.length - 1; j >= 0; j--) {
             const target = enemies[j];
-            if (target.isIndestructible) continue;
+            if (target.isIndestructible || target.hp <= 0) continue;
             const targetCx = target.x + ENEMY_WIDTH / 2;
             const targetCy = target.y + ENEMY_HEIGHT / 2;
             const onSameRow = Math.abs(targetCy - killedCy) < ENEMY_HEIGHT;
@@ -186,7 +186,6 @@ export function checkCollisions() {
               if (target.hp <= 0) {
                 spawnBlockShatter(target.x, target.y, 60, 30, '#00ffff');
                 clearEnemyCooldown(target.id);
-                enemies.splice(j, 1);
                 gameState.콤보_누적_개수 += 1;
                 gameState.점수 += baseScorePerBlock * gameState.콤보_누적_개수;
                 gameState.골드_개수 += 1;
@@ -203,7 +202,7 @@ export function checkCollisions() {
           const BLAST_RADIUS = 100;
           for (let j = enemies.length - 1; j >= 0; j--) {
             const target = enemies[j];
-            if (target.isIndestructible) continue;
+            if (target.isIndestructible || target.hp <= 0) continue;
             const targetCx = target.x + ENEMY_WIDTH / 2;
             const targetCy = target.y + ENEMY_HEIGHT / 2;
             const dx = targetCx - killedCx;
@@ -215,7 +214,6 @@ export function checkCollisions() {
               if (target.hp <= 0) {
                 spawnBlockShatter(target.x, target.y, 60, 30, '#ff6600');
                 clearEnemyCooldown(target.id);
-                enemies.splice(j, 1);
                 gameState.콤보_누적_개수 += 1;
                 gameState.점수 += baseScorePerBlock * gameState.콤보_누적_개수;
                 gameState.골드_개수 += 1;
