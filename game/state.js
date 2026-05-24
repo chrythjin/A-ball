@@ -20,7 +20,7 @@ export const gameState = {
   isMouseActive: false,
   현재_스테이지: 1,
   bgm_트랙_선택: 'auto',
-  골드_개수: parseInt(localStorage.getItem('game_gold') || '0'),
+  골드_개수: Number.isFinite(parseInt(localStorage.getItem('game_gold') || '0', 10)) ? parseInt(localStorage.getItem('game_gold') || '0', 10) : 0,
   장착된_볼: localStorage.getItem('game_equipped_ball') || 'basic',
   보유한_볼_리스트: JSON.parse(localStorage.getItem('game_owned_balls') || '["basic"]'),
   장착된_캐릭터: localStorage.getItem('game_equipped_character') || 'frog',

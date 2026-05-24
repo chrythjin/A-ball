@@ -117,7 +117,7 @@ export function checkCollisions() {
     for (let enemyIndex = enemies.length - 1; enemyIndex >= 0; enemyIndex--) {
       const enemy = enemies[enemyIndex];
 
-      if (damagedEnemies.has(enemy.id) || !isCollidingWithTunnelingGuard(ball, enemy)) {
+      if (enemy.hp <= 0 || damagedEnemies.has(enemy.id) || !isCollidingWithTunnelingGuard(ball, enemy)) {
         continue;
       }
 
@@ -147,8 +147,6 @@ export function checkCollisions() {
         const killedCx = killedX + ENEMY_WIDTH / 2;
         const killedCy = killedY + ENEMY_HEIGHT / 2;
 
-        clearEnemyCooldown(enemy.id);
-        enemies.splice(enemyIndex, 1);
         recordKill();
 
         gameState.콤보_누적_개수 += 1;
